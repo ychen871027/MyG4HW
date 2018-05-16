@@ -25,8 +25,6 @@ public:
 protected:
   void ConstructPhantomContainer();
   void ConstructPhantom();
-  void SetScorer( G4LogicalVolume* voxel_logic );
-  virtual void ConstructSDandField();
 
 protected:
   G4Material* fAir;
@@ -44,7 +42,6 @@ protected:
   size_t* fMateIDs;
   G4int fNVoxelX, fNVoxelY, fNVoxelZ;
   G4double fVoxelXHalfOfX, fVoxelXHalfOfY, fVoxelXHalfOfZ;
-  std::set<G4LogicalVolume*> fScorers;
 };
 
 inline void MyG4HWDetectorConstruction::SetNoVoxelX( G4int val ){fNVoxelX=val;}

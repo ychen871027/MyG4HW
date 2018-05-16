@@ -15,6 +15,8 @@
 #include "G4MultiFunctionalDetector.hh"
 #include "G4PSDoseDeposit.hh"
 #include "G4PSDoseDeposit3D.hh"
+#include "MyG4HWSD.hh"
+
 MyG4HWDetectorConstruction::MyG4HWDetectorConstruction()
 :G4VUserDetectorConstruction(),
 fAir(0),
@@ -100,69 +102,50 @@ void MyG4HWDetectorConstruction::ConstructPhantomContainer(){
   }
 
 void MyG4HWDetectorConstruction::ConstructPhantom(){
+#ifdef G4VERBOSE
+  G4cout<<"MyG4HWDetectorConstruction::ConstructPhantom"<<G4endl;
+#endif
 
-  G4cout << "MyG4HWDetectorConstruction::ConstructPhantom" << G4endl;
-  MyG4HWPhantomParameterisation* param =
-    new MyG4HWPhantomParameterisation();
-  param->SetVoxelDimensions( fVoxelXHalfOfX, fVoxelXHalfOfY, fVoxelXHalfOfZ );
-  param->SetNoVoxel( fNVoxelX, fNVoxelY, fNVoxelZ );
-
-  fMateIDs = new size_t[fNVoxelX*fNVoxelY*fNVoxelZ];
-  fMaterials.clear();
-  for( G4int iz=0; iz<fNVoxelZ; iz++){
-    for( G4int iy=0; iy<fNVoxelY; iy++){
-      for( G4int ix=0; ix<fNVoxelX; ix++){
-        G4int idx_id = ix + iy*fNVoxelX + iz*fNVoxelX*fNVoxelY;
-        fMateIDs[idx_id] = idx_id;
-        fMaterials.push_back(fWater);
-      }
+fMateIDs = new size_t[fNVoxelX*fNVoxelY*fNVoxelZ];
+fMaterials.clear();
+for( G4int iz=0; iz<fNVoxelZ; iz++){
+  for( G4int iy=0; iy<fNVoxelY; iy++){
+    for( G4int ix=0; ix<fNVoxelX; ix++){
+      G4int idx_id = ix + iy*fNVoxelX + iz*fNVoxelX*fNVoxelY;
+      fMateIDs[idx_id] = idx_id;
+      fMaterials.push_back(fWater);
     }
   }
-
-  param->SetMaterials( fMaterials );
+ }
+  G4String yRepName("RepY");
+  G4VSolid* solYRep = new G4Box(yRepName, fNVoxelX*fVoxelXHalfOfX,
+                                fVoxelXHalfOfY,
+                                fNVoxelZ*fVoxelXHalfOfZ );
+  G4LogicalVolume* logYRep = new G4LogicalVolume(solYRep, fAir, yRepName);
+  new G4PVReplica( yRepName, logYRep, fContainer_logic, kYAxis, fNVoxelY,
+                   fVoxelXHalfOfY*2 );
+  //logYRep->SetVisAttributes( new G4VisAttributes(G4VisAttributes::GetInvisible()));
+  logYRep->SetVisAttributes(G4VisAttributes(true, G4Colour(1.0,0.0,0.0)));
+  G4String xRepName("RepX");
+  G4VSolid* solXRep = new G4Box( xRepName, fVoxelXHalfOfX, fVoxelXHalfOfY,
+                                 fNVoxelZ*fVoxelXHalfOfZ );
+  G4LogicalVolume* logXRep = new G4LogicalVolume( solXRep, fAir, xRepName );
+  new G4PVReplica( xRepName, logXRep, logYRep, kXAxis, fNVoxelX, fVoxelXHalfOfX*2);
+  //logXRep->SetVisAttributes(new G4VisAttributes(G4VisAttributes::GetInvisible()));
+  logXRep->SetVisAttributes(G4VisAttributes(true, G4Colour(0.,1.0,0.0)));
+  G4VSolid* solVoxel =  new G4Box("phantom", fVoxelXHalfOfX, fVoxelXHalfOfY, fVoxelXHalfOfZ);
+  G4LogicalVolume* logicVoxel =  new G4LogicalVolume(solVoxel, fAir, "phantom");
+  //logicVoxel->SetVisAttributes( new G4VisAttributes( G4VisAttributes::GetInvisible()));
+  logicVoxel->SetVisAttributes(G4VisAttributes(true, G4Colour(0.,0.0,1.0)));
+  G4ThreeVector voxelSize(fVoxelXHalfOfX, fVoxelXHalfOfY, fVoxelXHalfOfZ);
+  MyG4HWPhantomParameterisation* param = new MyG4HWPhantomParameterisation(voxelSize, fMaterials);
   param->SetMaterialIndices( fMateIDs );
+  param->SetNoVoxel( fNVoxelX, fNVoxelY, fNVoxelZ );
+  new G4PVParameterised( "phatom", logicVoxel, logXRep, kZAxis, fNVoxelZ, param );
 
-  G4Box* voxel_solid =
-    new G4Box( "Voxel", fVoxelXHalfOfX, fVoxelXHalfOfY, fVoxelXHalfOfZ );
-  G4LogicalVolume* voxel_logic =
-    new G4LogicalVolume( voxel_solid, fWater, "VoxelLogical", 0, 0, 0 );
-  //voxel_logic->SetVisAttributes(
-  //             new G4VisAttributes( G4VisAttributes::GetInvisible()));
-  voxel_logic->SetVisAttributes(G4VisAttributes(true, G4Colour(0.0,1.0,0.0)));
-  param->BuildContainerSolid( fContainer_phys );
-  param->CheckVoxelsFillContainer( fContainer_solid->GetXHalfLength(),
-                                   fContainer_solid->GetYHalfLength(),
-                                   fContainer_solid->GetZHalfLength()
-                                 );
+  //creat and add the SensitiveDetector for voxel;
+  MyG4HWSD* aSD = new MyG4HWSD("MyG4HWSD");
+  logicVoxel->SetSensitiveDetector(aSD);
+  G4SDManager::GetSDMpointer()->AddNewDetector(aSD);
 
-  G4PVParameterised * phantom_phys =
-    new G4PVParameterised( "phatom", voxel_logic, fContainer_logic, kXAxis,
-                           fNVoxelX*fNVoxelY*fNVoxelZ, param );
-
-  phantom_phys->SetRegularStructureId(1);
-
-  SetScorer( voxel_logic );
-}
-
-void MyG4HWDetectorConstruction::SetScorer( G4LogicalVolume* voxel_logic ){
-  G4cout << "\t SET SCORER: " << voxel_logic->GetName() << G4endl;
-  fScorers.insert( voxel_logic );
-}
-
-void MyG4HWDetectorConstruction::ConstructSDandField(){
-  G4cout << "\t construct SD " << G4endl;
-  G4String concreteSDName = "phantomSD";
-  std::vector<G4String> scorer_names;
-  scorer_names.push_back( concreteSDName );
-  G4MultiFunctionalDetector* MFDet =
-    new G4MultiFunctionalDetector( concreteSDName );
-  G4SDManager::GetSDMpointer()->AddNewDetector( MFDet );
-  G4VPrimitiveScorer* dosedep =
-    new G4PSDoseDeposit3D( "DoseDeposit", fNVoxelX, fNVoxelY, fNVoxelZ );
-  MFDet->RegisterPrimitive(dosedep);
-
-  for(std::set<G4LogicalVolume*>::iterator ite = fScorers.begin();
-      ite != fScorers.end(); ++ite ){
-        SetSensitiveDetector( *ite, MFDet );
-      }
 }
