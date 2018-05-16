@@ -11,6 +11,10 @@
 #include "G4PVParameterised.hh"
 #include "MyG4HWDetectorConstruction.hh"
 #include "MyG4HWPhantomParameterisation.hh"
+#include "G4SDManager.hh"
+#include "G4MultiFunctionalDetector.hh"
+#include "G4PSDoseDeposit.hh"
+#include "G4PSDoseDeposit3D.hh"
 MyG4HWDetectorConstruction::MyG4HWDetectorConstruction()
 :G4VUserDetectorConstruction(),
 fAir(0),
@@ -96,8 +100,8 @@ void MyG4HWDetectorConstruction::ConstructPhantomContainer(){
   }
 
 void MyG4HWDetectorConstruction::ConstructPhantom(){
+
   G4cout << "MyG4HWDetectorConstruction::ConstructPhantom" << G4endl;
-  G4cout << "MyG4HWDetectorConstruction::ConstructPhantom" <<__LINE__<< G4endl;
   MyG4HWPhantomParameterisation* param =
     new MyG4HWPhantomParameterisation();
   param->SetVoxelDimensions( fVoxelXHalfOfX, fVoxelXHalfOfY, fVoxelXHalfOfZ );
@@ -115,7 +119,6 @@ void MyG4HWDetectorConstruction::ConstructPhantom(){
     }
   }
 
-  G4cout << "MyG4HWDetectorConstruction::ConstructPhantom" <<__LINE__<< G4endl;
   param->SetMaterials( fMaterials );
   param->SetMaterialIndices( fMateIDs );
 
@@ -131,17 +134,35 @@ void MyG4HWDetectorConstruction::ConstructPhantom(){
                                    fContainer_solid->GetYHalfLength(),
                                    fContainer_solid->GetZHalfLength()
                                  );
-  
+
   G4PVParameterised * phantom_phys =
     new G4PVParameterised( "phatom", voxel_logic, fContainer_logic, kXAxis,
                            fNVoxelX*fNVoxelY*fNVoxelZ, param );
-  
+
   phantom_phys->SetRegularStructureId(1);
- 
+
   SetScorer( voxel_logic );
 }
 
 void MyG4HWDetectorConstruction::SetScorer( G4LogicalVolume* voxel_logic ){
   G4cout << "\t SET SCORER: " << voxel_logic->GetName() << G4endl;
   fScorers.insert( voxel_logic );
+}
+
+void MyG4HWDetectorConstruction::ConstructSDandField(){
+  G4cout << "\t construct SD " << G4endl;
+  G4String concreteSDName = "phantomSD";
+  std::vector<G4String> scorer_names;
+  scorer_names.push_back( concreteSDName );
+  G4MultiFunctionalDetector* MFDet =
+    new G4MultiFunctionalDetector( concreteSDName );
+  G4SDManager::GetSDMpointer()->AddNewDetector( MFDet );
+  G4VPrimitiveScorer* dosedep =
+    new G4PSDoseDeposit3D( "DoseDeposit", fNVoxelX, fNVoxelY, fNVoxelZ );
+  MFDet->RegisterPrimitive(dosedep);
+
+  for(std::set<G4LogicalVolume*>::iterator ite = fScorers.begin();
+      ite != fScorers.end(); ++ite ){
+        SetSensitiveDetector( *ite, MFDet );
+      }
 }

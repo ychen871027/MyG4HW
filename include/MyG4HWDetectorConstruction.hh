@@ -26,6 +26,7 @@ protected:
   void ConstructPhantomContainer();
   void ConstructPhantom();
   void SetScorer( G4LogicalVolume* voxel_logic );
+  virtual void ConstructSDandField();
 
 protected:
   G4Material* fAir;

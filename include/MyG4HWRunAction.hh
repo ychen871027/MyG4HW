@@ -6,16 +6,18 @@
 #include "G4String.hh"
 
 class G4Run;
+class MyG4HWRun;
 
 class MyG4HWRunAction:public G4UserRunAction{
 public:
   MyG4HWRunAction();
   ~MyG4HWRunAction();
-
+  virtual G4Run* GenerateRun();
   virtual void BeginOfRunAction( const G4Run* );
   virtual void EndOfRunAction( const G4Run* );
 
 private:
   std::vector<G4String> fSDName;
+  MyG4HWRun* fDcmrun;
 };
 #endif

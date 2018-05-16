@@ -46,9 +46,7 @@ target_link_libraries(MyG4HW ${Geant4_LIBRARIES})
 set(MyG4HW_MACROS
     run.mac vis.mac
     init_vis.mac
-  run1.mac
-  run2.mac
-    )
+   )
 
 foreach(_script ${MyG4HW_SCRIPTS})
   configure_file(
