@@ -30,20 +30,20 @@ int main( int argc, char** argv){
   //myhandler->CheckFileFormat();
 
   theGeometry = new MyG4HWDetectorConstruction();
-  
-  const G4int fNVoxelX=61;
-  const G4int fNVoxelY=1;
-  const G4int fNVoxelZ=150;
-  const G4double fVoxelX=5.;//305.;//30.5*cm;
-  const G4double fVoxelY=5;//2.;//0.2*cm;
-  const G4double fVoxelZ=2;//300.;//30*cm;
 
-  theGeometry->SetNoVoxelX(fNVoxelX);
-  theGeometry->SetNoVoxelY(fNVoxelY);
-  theGeometry->SetNoVoxelZ(fNVoxelZ);
-  theGeometry->SetVoxelX(fVoxelX);
-  theGeometry->SetVoxelY(fVoxelY);
-  theGeometry->SetVoxelZ(fVoxelZ);
+  const G4int NVoxelX=61;
+  const G4int NVoxelY=1;
+  const G4int NVoxelZ=150;
+  const G4double VoxelX=5.;//305.;//30.5*cm;
+  const G4double VoxelY=5;//2.;//0.2*cm;
+  const G4double VoxelZ=2;//300.;//30*cm;
+
+  theGeometry->SetNoVoxelX(NVoxelX);
+  theGeometry->SetNoVoxelY(NVoxelY);
+  theGeometry->SetNoVoxelZ(NVoxelZ);
+  theGeometry->SetVoxelX(VoxelX);
+  theGeometry->SetVoxelY(VoxelY);
+  theGeometry->SetVoxelZ(VoxelZ);
 
   runManager->SetUserInitialization( theGeometry );
 

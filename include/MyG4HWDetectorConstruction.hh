@@ -15,12 +15,12 @@ public:
   virtual G4VPhysicalVolume* Construct();
 
 public:
-  void SetNoVoxelX( const G4int& val ){fNVoxelX=val;}
-  void SetNoVoxelY( const G4int& val ){fNVoxelY=val;}
-  void SetNoVoxelZ( const G4int& val ){fNVoxelZ=val;}
-  void SetVoxelX( const G4double& val){fVoxelXHalfOfX=val/2.;}
-  void SetVoxelY( const G4double& val){fVoxelXHalfOfY=val/2.;}
-  void SetVoxelZ( const G4double& val){fVoxelXHalfOfZ=val/2.;}
+  void SetNoVoxelX( G4int val );
+  void SetNoVoxelY( G4int val );
+  void SetNoVoxelZ( G4int val );
+  void SetVoxelX( G4double val);
+  void SetVoxelY( G4double val);
+  void SetVoxelZ( G4double val);
 
 protected:
   void ConstructPhantomContainer();
@@ -47,4 +47,10 @@ protected:
   std::set<G4LogicalVolume*> fScorers;
 };
 
+inline void MyG4HWDetectorConstruction::SetNoVoxelX( G4int val ){fNVoxelX=val;}
+inline void MyG4HWDetectorConstruction::SetNoVoxelY( G4int val ){fNVoxelY=val;}
+inline void MyG4HWDetectorConstruction::SetNoVoxelZ( G4int val ){fNVoxelZ=val;}
+inline void MyG4HWDetectorConstruction::SetVoxelX( G4double val){fVoxelXHalfOfX=val/2.;}
+inline void MyG4HWDetectorConstruction::SetVoxelY( G4double val){fVoxelXHalfOfY=val/2.;}
+inline void MyG4HWDetectorConstruction::SetVoxelZ( G4double val){fVoxelXHalfOfZ=val/2.;}
 #endif
