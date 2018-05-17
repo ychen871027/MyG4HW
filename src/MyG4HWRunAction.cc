@@ -13,12 +13,13 @@ MyG4HWRunAction::MyG4HWRunAction():G4UserRunAction(){
   fSDName.push_back( G4String("phantomSD") );
   G4AnalysisManager* anaMag = G4AnalysisManager::Instance();
   anaMag->SetFileName("MyG4HW");
-  anaMag->CreateH1("dedxvsZ","dedxvsZ", 300,0,30);
+  anaMag->CreateH1("dedxvsZ","dedxvsZ", 150,0,30);
   anaMag->CreateNtuple("MyG4HW", "dedx postion");
   anaMag->CreateNtupleDColumn("pos_x");
   anaMag->CreateNtupleDColumn("pos_y");
   anaMag->CreateNtupleDColumn("pos_z");
   anaMag->CreateNtupleDColumn("sdep");
+  anaMag->CreateNtupleDColumn("sdose");
   anaMag->FinishNtuple();
 }
 

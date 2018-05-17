@@ -121,20 +121,22 @@ for( G4int iz=0; iz<fNVoxelZ; iz++){
   G4VSolid* solYRep = new G4Box(yRepName, fNVoxelX*fVoxelXHalfOfX,
                                 fVoxelXHalfOfY,
                                 fNVoxelZ*fVoxelXHalfOfZ );
-  G4LogicalVolume* logYRep = new G4LogicalVolume(solYRep, fAir, yRepName);
+  G4LogicalVolume* logYRep = new G4LogicalVolume(solYRep, fWater, yRepName);
   new G4PVReplica( yRepName, logYRep, fContainer_logic, kYAxis, fNVoxelY,
                    fVoxelXHalfOfY*2 );
   //logYRep->SetVisAttributes( new G4VisAttributes(G4VisAttributes::GetInvisible()));
   logYRep->SetVisAttributes(G4VisAttributes(true, G4Colour(1.0,0.0,0.0)));
+
   G4String xRepName("RepX");
   G4VSolid* solXRep = new G4Box( xRepName, fVoxelXHalfOfX, fVoxelXHalfOfY,
                                  fNVoxelZ*fVoxelXHalfOfZ );
-  G4LogicalVolume* logXRep = new G4LogicalVolume( solXRep, fAir, xRepName );
+  G4LogicalVolume* logXRep = new G4LogicalVolume( solXRep, fWater, xRepName );
   new G4PVReplica( xRepName, logXRep, logYRep, kXAxis, fNVoxelX, fVoxelXHalfOfX*2);
   //logXRep->SetVisAttributes(new G4VisAttributes(G4VisAttributes::GetInvisible()));
   logXRep->SetVisAttributes(G4VisAttributes(true, G4Colour(0.,1.0,0.0)));
+
   G4VSolid* solVoxel =  new G4Box("phantom", fVoxelXHalfOfX, fVoxelXHalfOfY, fVoxelXHalfOfZ);
-  G4LogicalVolume* logicVoxel =  new G4LogicalVolume(solVoxel, fAir, "phantom");
+  G4LogicalVolume* logicVoxel =  new G4LogicalVolume(solVoxel, fWater, "phantom");
   //logicVoxel->SetVisAttributes( new G4VisAttributes( G4VisAttributes::GetInvisible()));
   logicVoxel->SetVisAttributes(G4VisAttributes(true, G4Colour(0.,0.0,1.0)));
   G4ThreeVector voxelSize(fVoxelXHalfOfX, fVoxelXHalfOfY, fVoxelXHalfOfZ);
