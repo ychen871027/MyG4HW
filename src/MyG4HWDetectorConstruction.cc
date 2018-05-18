@@ -9,49 +9,52 @@
 #include "G4NistManager.hh"
 #include "G4VisAttributes.hh"
 #include "G4PVParameterised.hh"
-#include "MyG4HWDetectorConstruction.hh"
-#include "MyG4HWPhantomParameterisation.hh"
 #include "G4SDManager.hh"
 #include "G4MultiFunctionalDetector.hh"
 #include "G4PSDoseDeposit.hh"
 #include "G4PSDoseDeposit3D.hh"
 #include "MyG4HWSD.hh"
+#include "MyG4HWDetectorConstruction.hh"
+#include "MyG4HWPhantomParameterisation.hh"
 
 MyG4HWDetectorConstruction::MyG4HWDetectorConstruction()
-:G4VUserDetectorConstruction(),
-fAir(0),
-fWater(0),
-fWorld_solid(0),
-fWorld_logic(0),
-fWorld_phys(0),
-fContainer_solid(0),
-fContainer_logic(0),
-fContainer_phys(0),
-fNVoxelX(0),
-fNVoxelY(0),
-fNVoxelZ(0)
+  :G4VUserDetectorConstruction(),
+   fAir{nullptr},
+   fWater{nullptr},
+   fWorld_solid{nullptr},
+   fWorld_logic{nullptr},
+   fWorld_phys{nullptr},
+   fContainer_solid{nullptr},
+   fContainer_logic{nullptr},
+   fContainer_phys{nullptr},
+   fNVoxelX(0),
+   fNVoxelY(0),
+   fNVoxelZ(0)
 {}
 
 MyG4HWDetectorConstruction::~MyG4HWDetectorConstruction(){}
 
-G4VPhysicalVolume* MyG4HWDetectorConstruction::Construct(){
-
+G4VPhysicalVolume* MyG4HWDetectorConstruction::Construct()
+{
   G4NistManager* nist = G4NistManager::Instance();
   fAir   = nist->FindOrBuildMaterial( "G4_AIR" );
   fWater = nist->FindOrBuildMaterial( "G4_WATER" );
-  G4double world_x=300;//0.5*m;
-  G4double world_y=10;//0.5*m;
-  G4double world_z=1200;//1.5*m;
+  G4double world_x = 300;//0.5*m;
+  G4double world_y = 10;//0.5*m;
+  G4double world_z = 1200;//1.5*m;
 
-  fWorld_solid = new G4Box( "WorldSolid",
-                            world_x,
-                            world_y,
-                            world_z );
-  fWorld_logic = new G4LogicalVolume( fWorld_solid,
-                                      fAir,
-                                      "WorldLogical",
-                                      0, 0, 0 );
+  fWorld_solid = new G4Box("WorldSolid",
+                           world_x,
+                           world_y,
+                           world_z);
+
+  fWorld_logic = new G4LogicalVolume(fWorld_solid,
+                                     fAir,
+                                     "WorldLogical",
+                                     0, 0, 0 );
+
   fWorld_logic->SetVisAttributes(G4VisAttributes(true, G4Colour(0.0, 0.0,1.0)));
+
   fWorld_phys  = new G4PVPlacement( 0,
                                     G4ThreeVector(0, 0, 0),
                                     "World",
@@ -101,42 +104,41 @@ void MyG4HWDetectorConstruction::ConstructPhantomContainer(){
 
   }
 
-void MyG4HWDetectorConstruction::ConstructPhantom(){
-#ifdef G4VERBOSE
+void MyG4HWDetectorConstruction::ConstructPhantom()
+{
   G4cout<<"MyG4HWDetectorConstruction::ConstructPhantom"<<G4endl;
-#endif
 
-fMateIDs = new size_t[fNVoxelX*fNVoxelY*fNVoxelZ];
-fMaterials.clear();
-for( G4int iz=0; iz<fNVoxelZ; iz++){
-  for( G4int iy=0; iy<fNVoxelY; iy++){
-    for( G4int ix=0; ix<fNVoxelX; ix++){
-      G4int idx_id = ix + iy*fNVoxelX + iz*fNVoxelX*fNVoxelY;
-      fMateIDs[idx_id] = idx_id;
-      fMaterials.push_back(fWater);
+  fMateIDs = new size_t[fNVoxelX*fNVoxelY*fNVoxelZ];
+  fMaterials.clear();
+  for( G4int iz=0; iz<fNVoxelZ; iz++){
+    for( G4int iy=0; iy<fNVoxelY; iy++){
+      for( G4int ix=0; ix<fNVoxelX; ix++){
+        G4int idx_id = ix + iy*fNVoxelX + iz*fNVoxelX*fNVoxelY;
+        fMateIDs[idx_id] = idx_id;
+        fMaterials.push_back(fWater);
+      }
     }
   }
- }
-  G4String yRepName("RepY");
-  G4VSolid* solYRep = new G4Box(yRepName, fNVoxelX*fVoxelXHalfOfX,
+
+  G4VSolid* solYRep = new G4Box("RepY", fNVoxelX*fVoxelXHalfOfX,
                                 fVoxelXHalfOfY,
-                                fNVoxelZ*fVoxelXHalfOfZ );
-  G4LogicalVolume* logYRep = new G4LogicalVolume(solYRep, fWater, yRepName);
-  new G4PVReplica( yRepName, logYRep, fContainer_logic, kYAxis, fNVoxelY,
-                   fVoxelXHalfOfY*2 );
+                                fNVoxelZ*fVoxelXHalfOfZ);
+  G4LogicalVolume* logYRep = new G4LogicalVolume(solYRep, fWater, "RepY");
+  new G4PVReplica("RepY", logYRep, fContainer_logic,
+                  kYAxis, fNVoxelY, fVoxelXHalfOfY*2);
   //logYRep->SetVisAttributes( new G4VisAttributes(G4VisAttributes::GetInvisible()));
   logYRep->SetVisAttributes(G4VisAttributes(true, G4Colour(1.0,0.0,0.0)));
 
   G4String xRepName("RepX");
-  G4VSolid* solXRep = new G4Box( xRepName, fVoxelXHalfOfX, fVoxelXHalfOfY,
-                                 fNVoxelZ*fVoxelXHalfOfZ );
-  G4LogicalVolume* logXRep = new G4LogicalVolume( solXRep, fWater, xRepName );
+  G4VSolid* solXRep = new G4Box("RepX", fVoxelXHalfOfX,
+                                fVoxelXHalfOfY, fNVoxelZ*fVoxelXHalfOfZ);
+  G4LogicalVolume* logXRep = new G4LogicalVolume(solXRep, fWater, xRepName);
   new G4PVReplica( xRepName, logXRep, logYRep, kXAxis, fNVoxelX, fVoxelXHalfOfX*2);
   //logXRep->SetVisAttributes(new G4VisAttributes(G4VisAttributes::GetInvisible()));
   logXRep->SetVisAttributes(G4VisAttributes(true, G4Colour(0.,1.0,0.0)));
 
   G4VSolid* solVoxel =  new G4Box("phantom", fVoxelXHalfOfX, fVoxelXHalfOfY, fVoxelXHalfOfZ);
-  G4LogicalVolume* logicVoxel =  new G4LogicalVolume(solVoxel, fWater, "phantom");
+  G4LogicalVolume* logicVoxel = new G4LogicalVolume(solVoxel, fWater, "phantom");
   //logicVoxel->SetVisAttributes( new G4VisAttributes( G4VisAttributes::GetInvisible()));
   logicVoxel->SetVisAttributes(G4VisAttributes(true, G4Colour(0.,0.0,1.0)));
   G4ThreeVector voxelSize(fVoxelXHalfOfX, fVoxelXHalfOfY, fVoxelXHalfOfZ);

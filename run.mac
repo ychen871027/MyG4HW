@@ -1,10 +1,10 @@
 # Ye.Chen
 #
 # Homework marco
-# 
+#
 
 #########################
-# Set of the verboses 
+# Set of the verboses
 #
 /control/verbose 1
 /tracking/verbose 0
@@ -27,4 +27,7 @@
 
 /run/initialize
 
-/run/beamOn 1000
+/run/beamOn 10
+#/run/beamOn 10000
+#/run/beamOn 100000
+#100000000

@@ -1,5 +1,5 @@
-#ifndef MyG4HWEventAction_h
-#define MyG4HWEventAction_h 1
+#ifndef MYG4HW_EVENT_ACTION_H_
+#define MYG4HW_EVENT_ACTION_H_
 
 #include "G4UserEventAction.hh"
 
@@ -10,8 +10,8 @@ public:
   MyG4HWEventAction();
   ~MyG4HWEventAction();
 
-  virtual void BeginOfEventAction( const G4Event* );
-  virtual void EndOfEventAction( const G4Event* anEvent);
+  virtual void BeginOfEventAction(const G4Event*);
+  virtual void EndOfEventAction(const G4Event* anEvent);
 };
 
 #endif

@@ -1,8 +1,7 @@
-#ifndef MyG4HWDetectorConstruction_h
-#define MyG4HWDetectorConstruction_h 1
+#ifndef MYG4HW_DETECTOR_CONSTRUCTION_H_
+#define MYG4HW_DETECTOR_CONSTRUCTION_H_
 
 #include "G4VUserDetectorConstruction.hh"
-#include <set>
 
 class G4Material;
 class G4Box;
@@ -11,10 +10,9 @@ class G4LogicalVolume;
 class MyG4HWDetectorConstruction : public G4VUserDetectorConstruction{
 public:
   MyG4HWDetectorConstruction();
-  ~MyG4HWDetectorConstruction();
+  virtual ~MyG4HWDetectorConstruction();
   virtual G4VPhysicalVolume* Construct();
 
-public:
   void SetNoVoxelX( G4int val );
   void SetNoVoxelY( G4int val );
   void SetNoVoxelZ( G4int val );
@@ -26,7 +24,6 @@ protected:
   void ConstructPhantomContainer();
   void ConstructPhantom();
 
-protected:
   G4Material* fAir;
   G4Material* fWater;
 
@@ -40,7 +37,8 @@ protected:
 
   std::vector<G4Material*> fMaterials;
   size_t* fMateIDs;
-  G4int fNVoxelX, fNVoxelY, fNVoxelZ;
+  G4int fNVoxelX;
+  int fNVoxelY, fNVoxelZ;
   G4double fVoxelXHalfOfX, fVoxelXHalfOfY, fVoxelXHalfOfZ;
 };
 

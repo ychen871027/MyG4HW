@@ -16,10 +16,16 @@ endif()
 include(${Geant4_USE_FILE})
 
 #----------------------------------------------------------------------------
+# Find ROOT
+#
+find_package(ROOT REQUIRED)
+
+#----------------------------------------------------------------------------
 # Locate sources and headers for this project
 #
 include_directories(${PROJECT_SOURCE_DIR}/include
                     ${Geant4_INCLUDE_DIR}
+                    ${ROOT_INCLUDE_DIRS}
                    )
 
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
@@ -33,7 +39,7 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 #
 add_executable(MyG4HW MyG4HW.cc ${headers} ${sources})
 
-target_link_libraries(MyG4HW ${Geant4_LIBRARIES})
+target_link_libraries(MyG4HW ${Geant4_LIBRARIES} ${ROOT_LIBRARIES})
 
 
 #----------------------------------------------------------------------------
