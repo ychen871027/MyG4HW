@@ -1,17 +1,11 @@
-#include "G4RunManager.hh"
 #include "G4HCofThisEvent.hh"
-#include "G4Step.hh"
-#include "G4ThreeVector.hh"
-#include "G4SDManager.hh"
-#include "MyG4HWAnalysis.hh"
 #include "G4NistManager.hh"
+#include "G4Step.hh"
+#include "G4SystemOfUnits.hh"
+#include "G4ThreeVector.hh"
 #include <math.h>
+#include "MyG4HWAnalysis.hh"
 #include "MyG4HWSD.hh"
-
-using CLHEP::cm;
-using CLHEP::cm3;
-using CLHEP::kg;
-using CLHEP::g;
 
 MyG4HWSD::MyG4HWSD(G4String SDname)
   :G4VSensitiveDetector(SDname)

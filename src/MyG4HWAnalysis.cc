@@ -1,5 +1,5 @@
-#include <CLHEP/Units/SystemOfUnits.h>
 #include "G4UnitsTable.hh"
+#include <CLHEP/Units/SystemOfUnits.h>
 #include <TFile.h>
 #include <TTree.h>
 #include <TH1D.h>
@@ -21,7 +21,7 @@ MyG4HWAnalysis::MyG4HWAnalysis()
    fPos_z(0.),
    fEdep(0.)
 {
-   for(G4int i=0; i<kMaxHist; ++i) fHist[i]=nullptr;
+   for(G4int i=0; i<kMaxHist; ++i) fHist[i] = nullptr;
    fInstance = this;
 }
 
@@ -39,16 +39,14 @@ void MyG4HWAnalysis::BookTreeAndHist()
     G4cout << "can not create output root file" << G4endl;
     return;
   }
-  std::cout <<__FILE__<< "debug " << __LINE__<<std::endl;
+
   fNtuple = new TTree("MyG4HW","MyG4HW");
   fNtuple->Branch("Pos_x", &fPos_x, "Pos_x/D");
   fNtuple->Branch("Pos_y", &fPos_y, "Pos_y/D");
   fNtuple->Branch("Pos_z", &fPos_z, "Pos_z/D");
   fNtuple->Branch("Edep", &fEdep, "Edep/D");
-  std::cout <<__FILE__<< "debug " << __LINE__<<std::endl;
   fHist[0] = new TH1D("PositionZ[mm]", "PostitionZ", 150, 0., 30*CLHEP::cm);
 
-  G4cout << "The output file is open in " << fileName << G4endl;
 }
 
 void MyG4HWAnalysis::SaveFile()

@@ -1,21 +1,16 @@
+#include "G4NistManager.hh"
 #include "G4Box.hh"
 #include "G4LogicalVolume.hh"
+#include "G4SystemOfUnits.hh"
 #include "G4VPhysicalVolume.hh"
 #include "G4PVPlacement.hh"
 #include "G4Material.hh"
-#include "G4Element.hh"
-#include "G4UIcommand.hh"
-#include "G4PhysicalConstants.hh"
-#include "G4NistManager.hh"
 #include "G4VisAttributes.hh"
 #include "G4PVParameterised.hh"
 #include "G4SDManager.hh"
-#include "G4MultiFunctionalDetector.hh"
-#include "G4PSDoseDeposit.hh"
-#include "G4PSDoseDeposit3D.hh"
+#include "MyG4HWPhantomParameterisation.hh"
 #include "MyG4HWSD.hh"
 #include "MyG4HWDetectorConstruction.hh"
-#include "MyG4HWPhantomParameterisation.hh"
 
 MyG4HWDetectorConstruction::MyG4HWDetectorConstruction()
   :G4VUserDetectorConstruction(),
@@ -33,13 +28,13 @@ G4VPhysicalVolume* MyG4HWDetectorConstruction::Construct()
   G4Material* G4water = nist->FindOrBuildMaterial("G4_WATER");
 
   G4double world_x = 300;//0.5*m;
-  G4double world_y = 10;//0.5*m;
-  G4double world_z = 1200;//1.5*m;
+  G4double world_y = 10;//0.1*m;
+  G4double world_z = 1200;//1.2*m;
 
   auto world_solid = new G4Box("WorldSolid",
-                               world_x,
-                               world_y,
-                               world_z);
+                               world_x*mm,
+                               world_y*mm,
+                               world_z*mm);
 
   auto world_logic = new G4LogicalVolume(world_solid,
                                          G4air,
@@ -85,7 +80,7 @@ G4VPhysicalVolume* MyG4HWDetectorConstruction::Construct()
                                 fNVoxelZ*fVoxelXHalfOfZ);
   G4LogicalVolume* logYRep = new G4LogicalVolume(solYRep, G4water, "RepY");
   new G4PVReplica("RepY", logYRep, phantom_logic,
-                kYAxis, fNVoxelY, fVoxelXHalfOfY*2);
+                  kYAxis, fNVoxelY, fVoxelXHalfOfY*2);
 
   G4VSolid* solXRep = new G4Box("RepX", fVoxelXHalfOfX,
                               fVoxelXHalfOfY, fNVoxelZ*fVoxelXHalfOfZ);
@@ -100,6 +95,7 @@ G4VPhysicalVolume* MyG4HWDetectorConstruction::Construct()
   G4ThreeVector voxelSize(fVoxelXHalfOfX, fVoxelXHalfOfY, fVoxelXHalfOfZ);
 
   std::vector<G4Material*> phantomMat(1, G4water);
+
   MyG4HWPhantomParameterisation* param
     = new MyG4HWPhantomParameterisation(voxelSize, phantomMat);
   param->SetNoVoxel( fNVoxelX, fNVoxelY, fNVoxelZ );

@@ -2,21 +2,17 @@
 #include "G4UImanager.hh"
 #include "G4GenericPhysicsList.hh"
 #include "Shielding.hh"
-
+#include "G4VisExecutive.hh"
+#include "G4UIExecutive.hh"
 #include "MyG4HWDetectorConstruction.hh"
 #include "MyG4HWActionInitialization.hh"
 //#include "QGSP_BIC.hh"
-#include "G4tgrMessenger.hh"
-
-#include "G4VisExecutive.hh"
-#include "G4UIExecutive.hh"
-
 
 int main( int argc, char** argv)
 {
 
   G4RunManager* runManager = new G4RunManager;
-  G4cout<<"MyG4HW:: create runManager"<<G4endl;
+  G4cout << "MyG4HW:: create runManager" << G4endl;
   MyG4HWDetectorConstruction* theGeometry = 0;
 
   theGeometry = new MyG4HWDetectorConstruction();
@@ -35,12 +31,12 @@ int main( int argc, char** argv)
   theGeometry->SetVoxelY(VoxelY);
   theGeometry->SetVoxelZ(VoxelZ);
 
-  runManager->SetUserInitialization( theGeometry );
+  runManager->SetUserInitialization(theGeometry);
 
   G4VModularPhysicsList* phys = new Shielding();
-  runManager->SetUserInitialization( phys );
+  runManager->SetUserInitialization(phys);
 
-  runManager->SetUserInitialization( new MyG4HWActionInitialization() );
+  runManager->SetUserInitialization(new MyG4HWActionInitialization());
 
   runManager->Initialize();
 

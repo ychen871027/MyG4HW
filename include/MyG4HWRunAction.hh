@@ -2,7 +2,6 @@
 #define MYG4_HWRUN_ACTION_H_
 
 #include "G4UserRunAction.hh"
-#include <vector>
 #include "G4String.hh"
 
 class G4Run;
@@ -17,7 +16,6 @@ public:
   virtual void EndOfRunAction(const G4Run*);
 
 private:
-  std::vector<G4String> fSDName;
   MyG4HWAnalysis* fAnaMan;
   G4double fPos_x;
   G4double fPos_y;

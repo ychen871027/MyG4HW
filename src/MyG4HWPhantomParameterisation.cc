@@ -1,7 +1,5 @@
-#include "G4VisAttributes.hh"
 #include "G4Material.hh"
 #include "G4VPhysicalVolume.hh"
-#include "G4LogicalVolume.hh"
 #include "G4VTouchable.hh"
 #include "G4Box.hh"
 #include "MyG4HWPhantomParameterisation.hh"

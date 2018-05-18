@@ -1,7 +1,6 @@
 #ifndef MYG4HW_PHANTOM_PARAMETERISATION_H_
 #define MYG4HW_PHANTOM_PARAMETERISATION_H_
 
-#include <map>
 #include "G4VNestedParameterisation.hh"
 #include "G4ThreeVector.hh"
 #include <vector>
@@ -21,7 +20,7 @@ public:
 
   G4Material* ComputeMaterial(G4VPhysicalVolume* , G4int iz,
                               const G4VTouchable* parentTouch);
-  //void SetMaterialIndices( size_t* matInd ){fMaterialIndices = matInd;}
+
   void SetNoVoxel(G4int nx, G4int ny, G4int nz);
   G4int GetMaterialIndex( G4int copyNo )const;
   G4int GetNumberOfMaterials()const;
@@ -60,7 +59,6 @@ void ComputeDimensions (G4Polyhedra&, const G4int,
 using G4VNestedParameterisation::ComputeMaterial;
 
 private:
-  std::map<G4String, G4VisAttributes*> fColours;
   G4int fnX;
   G4int fnY;
   G4int fnZ;
@@ -68,8 +66,7 @@ private:
   G4double fdY;
   G4double fdZ;
   std::vector<G4Material*> fMaterials;
-  size_t* fMaterialIndices;
-  std::vector<G4double> fpZ;
+
 };
 
 #endif

@@ -1,7 +1,5 @@
 #ifndef MYG4HW_ANALYSIS_H_
 #define MYG4HW_ANALYSIS_H_
-#include <CLHEP/Units/SystemOfUnits.h>
-#include "G4UnitsTable.hh"
 
 class TFile;
 class TTree;
