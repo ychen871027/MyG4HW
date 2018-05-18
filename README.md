@@ -1,6 +1,6 @@
 # My first Geant4 exercise
 
-##Usage
+## Usage
 
 ```bash
 cmake -DGeant4_DIR=$MYG4 ../MyG4HW
