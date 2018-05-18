@@ -10,7 +10,7 @@ MyG4HWPhantomParameterisation::MyG4HWPhantomParameterisation(
                                const G4ThreeVector& voxelSize,
                                 std::vector<G4Material*>& mat)
   :fdX(voxelSize.x()), fdY(voxelSize.y()), fdZ(voxelSize.z()),
-   fMaterials(mat),fMaterialIndices{nullptr}
+   fMaterials(mat)
 {
 }
 
@@ -28,23 +28,15 @@ void MyG4HWPhantomParameterisation::SetNoVoxel( G4int nx,
 }
 
 G4Material* MyG4HWPhantomParameterisation::ComputeMaterial(
-                                G4VPhysicalVolume*, G4int iz,
+                                G4VPhysicalVolume*, G4int,
                                 const G4VTouchable* parentTouch)
 {
   if (parentTouch==0) return fMaterials[0];
-  G4int ix = parentTouch->GetReplicaNumber(0);
-  G4int iy = parentTouch->GetReplicaNumber(1);
-  G4int copyID = ix + fnX*iy+fnX*fnY*iz;
-  G4int matIdx = GetMaterialIndex(copyID);
+
   G4Material* mate = 0;
-  mate = fMaterials[matIdx];
+  mate = fMaterials[0];
 
   return mate;
-}
-
-G4int MyG4HWPhantomParameterisation::GetMaterialIndex(G4int copyNo)const
-{
-  return fMaterialIndices[copyNo];
 }
 
 G4int MyG4HWPhantomParameterisation::GetNumberOfMaterials()const

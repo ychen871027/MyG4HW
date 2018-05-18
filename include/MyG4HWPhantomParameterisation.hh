@@ -21,7 +21,7 @@ public:
 
   G4Material* ComputeMaterial(G4VPhysicalVolume* , G4int iz,
                               const G4VTouchable* parentTouch);
-  void SetMaterialIndices( size_t* matInd ){fMaterialIndices = matInd;}
+  //void SetMaterialIndices( size_t* matInd ){fMaterialIndices = matInd;}
   void SetNoVoxel(G4int nx, G4int ny, G4int nz);
   G4int GetMaterialIndex( G4int copyNo )const;
   G4int GetNumberOfMaterials()const;
@@ -61,8 +61,12 @@ using G4VNestedParameterisation::ComputeMaterial;
 
 private:
   std::map<G4String, G4VisAttributes*> fColours;
-  G4int fnX,fnY,fnZ;
-  G4double fdX,fdY,fdZ;
+  G4int fnX;
+  G4int fnY;
+  G4int fnZ;
+  G4double fdX;
+  G4double fdY;
+  G4double fdZ;
   std::vector<G4Material*> fMaterials;
   size_t* fMaterialIndices;
   std::vector<G4double> fpZ;

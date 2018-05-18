@@ -13,33 +13,21 @@ public:
   virtual ~MyG4HWDetectorConstruction();
   virtual G4VPhysicalVolume* Construct();
 
-  void SetNoVoxelX( G4int val );
-  void SetNoVoxelY( G4int val );
-  void SetNoVoxelZ( G4int val );
-  void SetVoxelX( G4double val);
-  void SetVoxelY( G4double val);
-  void SetVoxelZ( G4double val);
+  void SetNoVoxelX(G4int val);
+  void SetNoVoxelY(G4int val);
+  void SetNoVoxelZ(G4int val);
+  void SetVoxelX(G4double val);
+  void SetVoxelY(G4double val);
+  void SetVoxelZ(G4double val);
 
 protected:
-  void ConstructPhantomContainer();
-  void ConstructPhantom();
 
-  G4Material* fAir;
-  G4Material* fWater;
-
-  G4Box* fWorld_solid;
-  G4LogicalVolume* fWorld_logic;
-  G4VPhysicalVolume* fWorld_phys;
-
-  G4Box* fContainer_solid;
-  G4LogicalVolume* fContainer_logic;
-  G4VPhysicalVolume* fContainer_phys;
-
-  std::vector<G4Material*> fMaterials;
-  size_t* fMateIDs;
   G4int fNVoxelX;
-  int fNVoxelY, fNVoxelZ;
-  G4double fVoxelXHalfOfX, fVoxelXHalfOfY, fVoxelXHalfOfZ;
+  G4int fNVoxelY;
+  G4int fNVoxelZ;
+  G4double fVoxelXHalfOfX;
+  G4double fVoxelXHalfOfY;
+  G4double fVoxelXHalfOfZ;
 };
 
 inline void MyG4HWDetectorConstruction::SetNoVoxelX( G4int val ){fNVoxelX=val;}
