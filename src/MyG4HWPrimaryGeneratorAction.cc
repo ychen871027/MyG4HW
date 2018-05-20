@@ -23,13 +23,13 @@ void MyG4HWPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
   G4String particleName;
   G4ParticleDefinition* particle
-    =particleTable->FindParticle( particleName="e-" );
-  //=particleTable->FindParticle( particleName="gamma" );
+  =particleTable->FindParticle( particleName="gamma" );
+  //=particleTable->FindParticle( particleName="e-" );
   //=particleTable->FindParticle( particleName="e-" );
   fParticleGun->SetParticleDefinition( particle );
   fParticleGun->SetParticleMomentumDirection( G4ThreeVector(0.,0.,1.) );
   fParticleGun->SetParticlePosition( G4ThreeVector(0.,0.,-100.*cm) );
-  fParticleGun->SetParticleEnergy( 20.*MeV );
-  //fParticleGun->SetParticleEnergy( 6.*MeV );
+  //fParticleGun->SetParticleEnergy( 20.*MeV );
+  fParticleGun->SetParticleEnergy( 6.*MeV );
   fParticleGun->GeneratePrimaryVertex( anEvent );
 }
