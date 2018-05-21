@@ -26,7 +26,13 @@
 #/geometry/textInput/verbose 3
 
 /run/initialize
-
+/gps/pos/shape Circle
+/gps/pos/centre 0. 0. -100. cm
+/gps/pos/radius 10. cm
+/gps/pos/type Beam
+/gps/particle e-
+/gps/energy 20. MeV
+/gps/direction 0 0 1
 /run/beamOn 1000
 #/run/beamOn 10000
 #/run/beamOn 100000

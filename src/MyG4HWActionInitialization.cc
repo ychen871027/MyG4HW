@@ -8,7 +8,9 @@ MyG4HWActionInitialization::MyG4HWActionInitialization()
 {
 }
 
-MyG4HWActionInitialization::~MyG4HWActionInitialization(){}
+MyG4HWActionInitialization::~MyG4HWActionInitialization()
+{
+}
 
 void MyG4HWActionInitialization::Build() const
 {

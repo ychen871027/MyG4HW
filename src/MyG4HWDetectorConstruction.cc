@@ -17,7 +17,8 @@ MyG4HWDetectorConstruction::MyG4HWDetectorConstruction()
    fNVoxelX(0),
    fNVoxelY(0),
    fNVoxelZ(0)
-{}
+{
+}
 
 MyG4HWDetectorConstruction::~MyG4HWDetectorConstruction(){}
 
@@ -39,7 +40,7 @@ G4VPhysicalVolume* MyG4HWDetectorConstruction::Construct()
   auto world_logic = new G4LogicalVolume(world_solid,
                                          G4air,
                                          "WorldLogical",
-                                          0, 0, 0 );
+                                         0, 0, 0);
 
   auto world_phys  = new G4PVPlacement(0,
                                        G4ThreeVector(0, 0, 0),
@@ -47,7 +48,7 @@ G4VPhysicalVolume* MyG4HWDetectorConstruction::Construct()
                                        world_logic,
                                        0,
                                        false,
-                                       0 );
+                                       0);
 
 // Mother Volume of water phantom
   auto phantom_solid = new G4Box("phantomVol", fNVoxelX*fVoxelXHalfOfX,
@@ -56,12 +57,12 @@ G4VPhysicalVolume* MyG4HWDetectorConstruction::Construct()
   auto phantom_logic = new G4LogicalVolume(phantom_solid,
                                            G4water,
                                            "phantomVol",
-                                           0, 0, 0 );
+                                           0, 0, 0);
 
   G4double Offset_X = 0.;
   G4double Offset_Y = 0.;
   G4double offset_Z = fNVoxelZ*fVoxelXHalfOfZ;
-  G4ThreeVector posCentreVoxels( Offset_X, Offset_Y, offset_Z );
+  G4ThreeVector posCentreVoxels(Offset_X, Offset_Y, offset_Z);
 
   G4cout << "placing voxel container volume at " << posCentreVoxels << G4endl;
 
@@ -72,7 +73,7 @@ G4VPhysicalVolume* MyG4HWDetectorConstruction::Construct()
                     "phantomVol",
                     world_logic,
                     false,
-                    1 );
+                    1);
 
   //Replication for water phantom and create logical volume for voxel
   G4VSolid* solYRep = new G4Box("RepY", fNVoxelX*fVoxelXHalfOfX,

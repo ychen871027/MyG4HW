@@ -71,10 +71,10 @@ G4bool MyG4HWSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
   fdepth_z = pos_world.z()/cm;
 
-  auto fAnaMan = MyG4HWAnalysis::Instance();
-  fAnaMan->FillNtuple(pos_world.x()/cm, pos_world.y()/cm,
-                      pos_world.z()/cm, edep);
-  fAnaMan->Fill1DHist(0, pos_world.z(), edep);
+  auto AnaMan = MyG4HWAnalysis::Instance();
+  AnaMan->FillNtuple(pos_world.x()/cm, pos_world.y()/cm,
+                      pos_world.z()/cm, copyNo, edep);
+  AnaMan->Fill1DHist(0, pos_world.z(), edep);
 
   return true;
 }

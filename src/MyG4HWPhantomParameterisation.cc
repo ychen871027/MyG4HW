@@ -6,7 +6,7 @@
 
 MyG4HWPhantomParameterisation::MyG4HWPhantomParameterisation(
                                const G4ThreeVector& voxelSize,
-                                std::vector<G4Material*>& mat)
+                               std::vector<G4Material*>& mat)
   :fdX(voxelSize.x()), fdY(voxelSize.y()), fdZ(voxelSize.z()),
    fMaterials(mat)
 {
@@ -51,15 +51,16 @@ void MyG4HWPhantomParameterisation::ComputeTransformation(
                                        const G4int copyNo,
                                        G4VPhysicalVolume* physVol) const
 {
-  physVol->SetTranslation(G4ThreeVector(0.,
-                                         0.,
+  physVol->SetTranslation(G4ThreeVector(
+                            0.,
+                            0.,
                             (2.*static_cast<double>(copyNo)+1.)*fdZ-fdZ*fnZ));
 }
 
 void MyG4HWPhantomParameterisation::ComputeDimensions(
                                             G4Box& box,
                                             const G4int,
-                                            const G4VPhysicalVolume*)const
+                                            const G4VPhysicalVolume*) const
 {
   box.SetXHalfLength(fdX);
   box.SetYHalfLength(fdY);

@@ -4,12 +4,7 @@
 #include "MyG4HWRunAction.hh"
 
 MyG4HWRunAction::MyG4HWRunAction()
-  :G4UserRunAction(),
-   fAnaMan{nullptr},
-   fPos_x(0.),
-   fPos_y(0.),
-   fPos_z(0.),
-   fEdep(0.)
+  :G4UserRunAction()
 {
 }
 
@@ -20,8 +15,8 @@ void MyG4HWRunAction::BeginOfRunAction(const G4Run* aRun)
   G4cout << "### RunID: "<< aRun->GetRunID() << " start." << G4endl;
   G4RunManager::GetRunManager()->SetRandomNumberStore(false);
 
-  fAnaMan = MyG4HWAnalysis::Instance();
-  fAnaMan->BookTreeAndHist();
+  auto AnaMan = MyG4HWAnalysis::Instance();
+  AnaMan->BookTreeAndHist();
 }
 
 void MyG4HWRunAction::EndOfRunAction(const G4Run* aRun)
@@ -29,5 +24,6 @@ void MyG4HWRunAction::EndOfRunAction(const G4Run* aRun)
   G4int nofEvts = aRun->GetNumberOfEvent();
   if (nofEvts == 0) return;
 
-  fAnaMan->SaveFile();
+  auto AnaMan = MyG4HWAnalysis::Instance();
+  AnaMan->SaveFile();
 }

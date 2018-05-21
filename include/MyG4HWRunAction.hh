@@ -15,11 +15,5 @@ public:
   virtual void BeginOfRunAction(const G4Run*);
   virtual void EndOfRunAction(const G4Run*);
 
-private:
-  MyG4HWAnalysis* fAnaMan;
-  G4double fPos_x;
-  G4double fPos_y;
-  G4double fPos_z;
-  G4double fEdep;
 };
 #endif
