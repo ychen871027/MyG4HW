@@ -3,20 +3,18 @@
 
 #include "G4VUserPrimaryGeneratorAction.hh"
 
-//class G4ParticleGun;
-class G4GeneralParticleSource;
 class G4Event;
+class G4ParticleGun;
+class PrimaryGeneratorAction;
 
-class MyG4HWPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction{
+class MyG4HWPrimaryGeneratorAction: public G4VUserPrimaryGeneratorAction
+{
 public:
   MyG4HWPrimaryGeneratorAction();
   virtual ~MyG4HWPrimaryGeneratorAction();
 
   virtual void GeneratePrimaries(G4Event*);
 
-private:
-  //G4ParticleGun* fParticleGun;
-  G4GeneralParticleSource* fParticleGun;
 };
 
 #endif

@@ -27,25 +27,9 @@ G4bool MyG4HWSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   double edep =  aStep-> GetTotalEnergyDeposit();
   fsum_edep = fsum_edep + edep;
 
-  double VoxelX=5.;//unit cm
-  double VoxelY=5.;
-  double VoxelZ=2.;
-
-  G4NistManager* nist = G4NistManager::Instance();
-  G4Material* Water = nist->FindOrBuildMaterial( "G4_WATER" );
-  G4double density = Water->GetDensity();
-  //G4cout<<" ............... water density: "<<density<<"/"<<density*cm3/g<<G4endl;
-  G4double emass= VoxelX * VoxelY * VoxelZ * density;
-  //G4cout<<".....mass "<<emass/g<<"/"<<emass/kg<<G4endl;
-
-  emass = emass/kg;
-  G4double edose = edep/emass; //unit: MeV/kg
-  std::cout << "........" <<edep << "/" <<emass << "/" << edose << G4endl;
-  edose = edose/(6.2415*pow(10,12));//unit:Gy
-
-  G4String particleName = aStep->GetTrack()->GetDefinition()->GetParticleName();
-  if (edep==0) return false;
-  fno_step = fno_step+1;
+  G4String particleName = aStep->GetTrack()-> GetDefinition()-> GetParticleName();
+  if ( edep == 0 ) return false;
+  fno_step++;
 
   G4cout << "each track particle " << fno_step << " particle: "
          << particleName <<G4endl;
@@ -54,27 +38,26 @@ G4bool MyG4HWSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   G4TouchableHandle touchable = preStepPoint->GetTouchableHandle();
 
   G4ThreeVector pos_world = preStepPoint->GetPosition();
-  G4ThreeVector pos_local
-      = touchable->GetHistory()->GetTopTransform().TransformPoint(pos_world);
 
   G4String sdName = touchable->GetVolume()->GetName();
-  G4int  copyNo   = touchable->GetCopyNumber();
+  G4int  copyNo_x   =touchable->GetReplicaNumber(1);
+  G4int  copyNo_y   =touchable->GetReplicaNumber(2);
+  G4int  copyNo_z   =touchable->GetReplicaNumber(0);
+   touchable->GetCopyNumber();
 
-  G4cout << "SD: " << sdName << " copyNo: " << copyNo << " edep: " << edep
-         << " edose: "<< edose << " sum_edep: " << fsum_edep << G4endl;
+  G4cout << "SD: " << sdName << " edep: " << edep << G4endl;
 
   G4cout << " world(x,y,z)" << pos_world.x() << ", " << pos_world.y()
          <<", "<<pos_world.z()<<G4endl;
+  G4cout << " copy(z,x,y) " << touchable->GetReplicaNumber(0)
+         << "/" << touchable->GetReplicaNumber(1)
+         << "/" << touchable->GetReplicaNumber(2) << G4endl;
 
-  G4cout << " local(x,y,z)" << pos_local.x() << ", " << pos_local.y()
-         <<", "<<pos_local.z()<<G4endl;
-
-  fdepth_z = pos_world.z()/cm;
 
   auto AnaMan = MyG4HWAnalysis::Instance();
-  AnaMan->FillNtuple(pos_world.x()/cm, pos_world.y()/cm,
-                      pos_world.z()/cm, copyNo, edep);
-  AnaMan->Fill1DHist(0, pos_world.z(), edep);
+  AnaMan-> FillNtuple(pos_world.x()/cm, pos_world.y()/cm, pos_world.z()/cm,
+                      copyNo_x, copyNo_y, copyNo_z, edep);
+  AnaMan-> Fill1DHist(0, pos_world.z()/cm, edep);
 
   return true;
 }
@@ -82,7 +65,4 @@ G4bool MyG4HWSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
 void MyG4HWSD::EndOfEvent(G4HCofThisEvent*)
 {
-  //G4AnalysisManager* anaMag = G4AnalysisManager::Instance();
-  G4cout << "---EndOfEvent sum_edep= " << fsum_edep << "/" << fdepth_z << G4endl;
-  //anaMag->FillH1(0, fdepth_z, fsum_edep);
 }

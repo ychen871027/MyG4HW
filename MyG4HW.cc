@@ -4,6 +4,7 @@
 #include "Shielding.hh"
 #include "G4VisExecutive.hh"
 #include "G4UIExecutive.hh"
+#include "G4SystemOfUnits.hh"
 #include "MyG4HWDetectorConstruction.hh"
 #include "MyG4HWActionInitialization.hh"
 //#include "QGSP_BIC.hh"
@@ -18,11 +19,11 @@ int main( int argc, char** argv)
   theGeometry = new MyG4HWDetectorConstruction();
 
   const G4int NVoxelX=61;
-  const G4int NVoxelY=1;
+  const G4int NVoxelY=61;
   const G4int NVoxelZ=150;
-  const G4double VoxelX=5.;//305.;//30.5*cm;
-  const G4double VoxelY=5;//2.;//0.2*cm;
-  const G4double VoxelZ=2;//300.;//30*cm;
+  const G4double VoxelX=5.*mm;
+  const G4double VoxelY=5.*mm;
+  const G4double VoxelZ=2.*mm;
 
   theGeometry->SetNoVoxelX(NVoxelX);
   theGeometry->SetNoVoxelY(NVoxelY);

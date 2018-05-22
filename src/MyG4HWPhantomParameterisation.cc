@@ -3,6 +3,11 @@
 #include "G4VTouchable.hh"
 #include "G4Box.hh"
 #include "MyG4HWPhantomParameterisation.hh"
+#include "G4NistManager.hh"
+
+namespace {
+  G4Material* water {nullptr};
+}
 
 MyG4HWPhantomParameterisation::MyG4HWPhantomParameterisation(
                                const G4ThreeVector& voxelSize,
@@ -10,15 +15,16 @@ MyG4HWPhantomParameterisation::MyG4HWPhantomParameterisation(
   :fdX(voxelSize.x()), fdY(voxelSize.y()), fdZ(voxelSize.z()),
    fMaterials(mat)
 {
+  G4NistManager* nist = G4NistManager::Instance();
+  ::water = nist->FindOrBuildMaterial( "G4_WATER" );
 }
 
 MyG4HWPhantomParameterisation::~MyG4HWPhantomParameterisation()
 {
 }
 
-void MyG4HWPhantomParameterisation::SetNoVoxel( G4int nx,
-                                                G4int ny,
-                                                G4int nz)
+void MyG4HWPhantomParameterisation::SetNoVoxel(
+    G4int nx, G4int ny, G4int nz)
 {
   fnX = nx;
   fnY = ny;
@@ -26,43 +32,24 @@ void MyG4HWPhantomParameterisation::SetNoVoxel( G4int nx,
 }
 
 G4Material* MyG4HWPhantomParameterisation::ComputeMaterial(
-                                G4VPhysicalVolume*, G4int,
-                                const G4VTouchable* parentTouch)
+    G4VPhysicalVolume*, const G4int, const G4VTouchable*)
 {
-  if (parentTouch==0) return fMaterials[0];
-
-  G4Material* mate = 0;
-  mate = fMaterials[0];
-
-  return mate;
+  return ::water;
 }
 
-G4int MyG4HWPhantomParameterisation::GetNumberOfMaterials()const
+G4int MyG4HWPhantomParameterisation::GetNumberOfMaterials() const
 {
-  return fMaterials.size();
+  return 1;
 }
 
-G4Material* MyG4HWPhantomParameterisation::GetMaterial(G4int i)const
+G4Material* MyG4HWPhantomParameterisation::GetMaterial( G4int  ) const
 {
-  return fMaterials[i];
+  return ::water;
 }
 
 void MyG4HWPhantomParameterisation::ComputeTransformation(
-                                       const G4int copyNo,
-                                       G4VPhysicalVolume* physVol) const
+    const G4int copyNo, G4VPhysicalVolume* physVol) const
 {
-  physVol->SetTranslation(G4ThreeVector(
-                            0.,
-                            0.,
-                            (2.*static_cast<double>(copyNo)+1.)*fdZ-fdZ*fnZ));
-}
-
-void MyG4HWPhantomParameterisation::ComputeDimensions(
-                                            G4Box& box,
-                                            const G4int,
-                                            const G4VPhysicalVolume*) const
-{
-  box.SetXHalfLength(fdX);
-  box.SetYHalfLength(fdY);
-  box.SetZHalfLength(fdZ);
+  physVol->SetTranslation(
+      G4ThreeVector(0., 0., (2.*copyNo + 1.) * fdZ - fdZ * fnZ));
 }

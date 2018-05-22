@@ -13,10 +13,8 @@
 #include "MyG4HWDetectorConstruction.hh"
 
 MyG4HWDetectorConstruction::MyG4HWDetectorConstruction()
-  :G4VUserDetectorConstruction(),
-   fNVoxelX(0),
-   fNVoxelY(0),
-   fNVoxelZ(0)
+  : G4VUserDetectorConstruction(),
+   fNVoxelX{0}, fNVoxelY(0), fNVoxelZ(0)
 {
 }
 
@@ -28,14 +26,14 @@ G4VPhysicalVolume* MyG4HWDetectorConstruction::Construct()
   G4Material* G4air   = nist->FindOrBuildMaterial("G4_AIR");
   G4Material* G4water = nist->FindOrBuildMaterial("G4_WATER");
 
-  G4double world_x = 300;//0.5*m;
-  G4double world_y = 10;//0.1*m;
-  G4double world_z = 1200;//1.2*m;
+  const G4double world_x = 300*mm;
+  const G4double world_y = 300*mm;
+  const G4double world_z = 1200*mm;
 
   auto world_solid = new G4Box("WorldSolid",
-                               world_x*mm,
-                               world_y*mm,
-                               world_z*mm);
+                               world_x,
+                               world_y,
+                               world_z);
 
   auto world_logic = new G4LogicalVolume(world_solid,
                                          G4air,
@@ -61,12 +59,11 @@ G4VPhysicalVolume* MyG4HWDetectorConstruction::Construct()
 
   G4double Offset_X = 0.;
   G4double Offset_Y = 0.;
-  G4double offset_Z = fNVoxelZ*fVoxelXHalfOfZ;
-  G4ThreeVector posCentreVoxels(Offset_X, Offset_Y, offset_Z);
+  G4double Offset_Z = fNVoxelZ*fVoxelXHalfOfZ;
+  G4ThreeVector posCentreVoxels(Offset_X, Offset_Y, Offset_Z);
 
   G4cout << "placing voxel container volume at " << posCentreVoxels << G4endl;
 
-  //auto phantom_phys =
   new G4PVPlacement(0,
                     posCentreVoxels,
                     phantom_logic,
@@ -116,12 +113,12 @@ G4VPhysicalVolume* MyG4HWDetectorConstruction::Construct()
   //Vis for geometry
   world_logic->SetVisAttributes(G4VisAttributes(true, G4Colour(0.0, 0.0,1.0)));
   phantom_logic->SetVisAttributes(G4VisAttributes(true, G4Colour(1.0,0.0,0.0)));
-  //logYRep->SetVisAttributes(new G4VisAttributes(G4VisAttributes::GetInvisible()));
-  logYRep->SetVisAttributes(G4VisAttributes(true, G4Colour(1.0,0.0,0.0)));
-  //logXRep->SetVisAttributes(new G4VisAttributes(G4VisAttributes::GetInvisible()));
-  logXRep->SetVisAttributes(G4VisAttributes(true, G4Colour(0.,1.0,0.0)));
-  //logicVoxel->SetVisAttributes(new G4VisAttributes( G4VisAttributes::GetInvisible()));
-  logicVoxel->SetVisAttributes(G4VisAttributes(true, G4Colour(0.,0.0,1.0)));
+  logYRep->SetVisAttributes(new G4VisAttributes(G4VisAttributes::GetInvisible()));
+  //logYRep->SetVisAttributes(G4VisAttributes(true, G4Colour(1.0,0.0,0.0)));
+  logXRep->SetVisAttributes(new G4VisAttributes(G4VisAttributes::GetInvisible()));
+  //logXRep->SetVisAttributes(G4VisAttributes(true, G4Colour(0.,1.0,0.0)));
+  logicVoxel->SetVisAttributes(new G4VisAttributes( G4VisAttributes::GetInvisible()));
+  //logicVoxel->SetVisAttributes(G4VisAttributes(true, G4Colour(0.,0.0,1.0)));
 
   return world_phys;
 }

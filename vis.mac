@@ -6,6 +6,7 @@
 #
 # Use this open statement to create an OpenGL view:
 /vis/open OGL 600x600-0+0
+/vis/ogl/set/displayListLimit 1000000
 /vis/ogl/set/eventsDrawInterval 1000000
 # Disable auto refresh and quieten vis messages whilst scene and
 # trajectories are established:

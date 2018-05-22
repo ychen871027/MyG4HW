@@ -17,8 +17,9 @@ public:
   void SaveFile();
 
   void Fill1DHist(G4int idx, G4double ibin_x, G4double iwet);
-  void FillNtuple(G4double pos_x, G4double pos_y,
-                  G4double pos_z, G4int vox_id, G4double edep);
+  void FillNtuple(G4double pos_x, G4double pos_y, G4double pos_z,
+                  G4int vox_id_x, G4int vox_id_y, G4int vox_id_z,
+                  G4double edep);
 
 private:
   static MyG4HWAnalysis* fInstance;
@@ -29,7 +30,9 @@ private:
   G4double fPos_x;
   G4double fPos_y;
   G4double fPos_z;
-  G4int    fVoxID;
+  G4int    fVoxID_X;
+  G4int    fVoxID_Y;
+  G4int    fVoxID_Z;
   G4double fEdep;
 };
 #endif
