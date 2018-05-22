@@ -1,19 +1,17 @@
 #include "G4Material.hh"
+#include "G4NistManager.hh"
 #include "G4VPhysicalVolume.hh"
 #include "G4VTouchable.hh"
-#include "G4Box.hh"
 #include "MyG4HWPhantomParameterisation.hh"
-#include "G4NistManager.hh"
 
 namespace {
   G4Material* water {nullptr};
 }
 
 MyG4HWPhantomParameterisation::MyG4HWPhantomParameterisation(
-                               const G4ThreeVector& voxelSize,
-                               std::vector<G4Material*>& mat)
-  :fdX(voxelSize.x()), fdY(voxelSize.y()), fdZ(voxelSize.z()),
-   fMaterials(mat)
+                               const G4ThreeVector& voxelSize
+                               )
+  :fdX(voxelSize.x()), fdY(voxelSize.y()), fdZ(voxelSize.z())
 {
   G4NistManager* nist = G4NistManager::Instance();
   ::water = nist->FindOrBuildMaterial( "G4_WATER" );

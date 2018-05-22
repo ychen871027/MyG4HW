@@ -3,7 +3,6 @@
 #include "G4Step.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4ThreeVector.hh"
-#include <math.h>
 #include "MyG4HWAnalysis.hh"
 #include "MyG4HWSD.hh"
 
@@ -18,7 +17,6 @@ void MyG4HWSD::Initialize(G4HCofThisEvent*)
 {
   fsum_edep=0.;
   fno_step=0;
-  fdepth_z=0.;
 }
 
 G4bool MyG4HWSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
@@ -39,16 +37,15 @@ G4bool MyG4HWSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
   G4ThreeVector pos_world = preStepPoint->GetPosition();
 
-  G4String sdName = touchable->GetVolume()->GetName();
-  G4int  copyNo_x   =touchable->GetReplicaNumber(1);
-  G4int  copyNo_y   =touchable->GetReplicaNumber(2);
-  G4int  copyNo_z   =touchable->GetReplicaNumber(0);
-   touchable->GetCopyNumber();
+  G4String sdName     = touchable->GetVolume()-> GetName();
+  G4int    copyNo_x   = touchable->GetReplicaNumber(1);
+  G4int    copyNo_y   = touchable->GetReplicaNumber(2);
+  G4int    copyNo_z   = touchable->GetReplicaNumber(0);
 
   G4cout << "SD: " << sdName << " edep: " << edep << G4endl;
 
-  G4cout << " world(x,y,z)" << pos_world.x() << ", " << pos_world.y()
-         <<", "<<pos_world.z()<<G4endl;
+  G4cout << " world(x,y,z)" << pos_world.x() << ", "
+         << pos_world.y() << ", " << pos_world.z() << G4endl;
   G4cout << " copy(z,x,y) " << touchable->GetReplicaNumber(0)
          << "/" << touchable->GetReplicaNumber(1)
          << "/" << touchable->GetReplicaNumber(2) << G4endl;

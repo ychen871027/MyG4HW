@@ -1,8 +1,8 @@
 #include "G4UnitsTable.hh"
 #include <CLHEP/Units/SystemOfUnits.h>
 #include <TFile.h>
-#include <TTree.h>
 #include <TH1D.h>
+#include <TTree.h>
 #include "MyG4HWAnalysis.hh"
 
 MyG4HWAnalysis* MyG4HWAnalysis::fInstance=nullptr;
@@ -44,13 +44,13 @@ void MyG4HWAnalysis::BookTreeAndHist()
   }
 
   fNtuple = new TTree("MyG4HW","MyG4HW");
-  fNtuple->Branch("Pos_x", &fPos_x, "Pos_x/D");
-  fNtuple->Branch("Pos_y", &fPos_y, "Pos_y/D");
-  fNtuple->Branch("Pos_z", &fPos_z, "Pos_z/D");
+  fNtuple->Branch("Pos_x",    &fPos_x,   "Pos_x/D");
+  fNtuple->Branch("Pos_y",    &fPos_y,   "Pos_y/D");
+  fNtuple->Branch("Pos_z",    &fPos_z,   "Pos_z/D");
   fNtuple->Branch("Vox_ID_X", &fVoxID_X, "Vox_ID_X/I");
   fNtuple->Branch("Vox_ID_Y", &fVoxID_Y, "Vox_ID_Y/I");
   fNtuple->Branch("Vox_ID_Z", &fVoxID_Z, "Vox_ID_Z/I");
-  fNtuple->Branch("Edep", &fEdep, "Edep/D");
+  fNtuple->Branch("Edep",     &fEdep,    "Edep/D");
   fHist[0] = new TH1D("PositionZ[mm]", "PostitionZ", 150, 0., 30*CLHEP::cm);
 
 }

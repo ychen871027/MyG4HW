@@ -2,7 +2,6 @@
 #define MYG4_HWRUN_ACTION_H_
 
 #include "G4UserRunAction.hh"
-#include "G4String.hh"
 
 class G4Run;
 class MyG4HWAnalysis;

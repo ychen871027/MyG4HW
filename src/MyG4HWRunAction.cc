@@ -1,5 +1,5 @@
-#include "G4RunManager.hh"
 #include "G4Run.hh"
+#include "G4RunManager.hh"
 #include "MyG4HWAnalysis.hh"
 #include "MyG4HWRunAction.hh"
 
@@ -8,7 +8,9 @@ MyG4HWRunAction::MyG4HWRunAction()
 {
 }
 
-MyG4HWRunAction::~MyG4HWRunAction(){}
+MyG4HWRunAction::~MyG4HWRunAction()
+{
+}
 
 void MyG4HWRunAction::BeginOfRunAction(const G4Run* aRun)
 {

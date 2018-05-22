@@ -1,9 +1,8 @@
-
 #include "Randomize.hh"
-#include "G4SystemOfUnits.hh"
-#include "G4ParticleGun.hh"
 #include "G4Event.hh"
+#include "G4ParticleGun.hh"
 #include "G4ParticleTable.hh"
+#include "G4SystemOfUnits.hh"
 #include "PrimaryGeneratorAction.hh"
 #include "MyG4HWPrimaryGeneratorAction.hh"
 
@@ -38,10 +37,11 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   double sinAlpha = RnmXY / RnmXYZ;
   double cosAlpha = RnmZ  / RnmXYZ;
   double sinPsi   = RnmY  / RnmXY ;
-  double cosPsi   = RnmY  / RnmXY ;
-
+  double cosPsi   = RnmX  / RnmXY ;
+  G4cout << "RnmX: " << RnmX << " RnmY: " << RnmY << " RnmZ: "<< RnmZ << G4endl;
   ::particleGun ->SetParticleMomentumDirection(
-      G4ThreeVector(sinAlpha*cosPsi, sinAlpha*sinPsi, cosAlpha));
+    G4ThreeVector(sinAlpha*cosPsi, sinAlpha*sinPsi, cosAlpha));
+    //  G4ThreeVector(0, 0, -1));
   ::particleGun ->SetParticlePosition( G4ThreeVector(0.*cm,0.*cm,-100.*cm) );
   ::particleGun ->SetParticleEnergy( 20.*MeV );
   //fParticleGun->SetParticleEnergy( 6.*MeV );

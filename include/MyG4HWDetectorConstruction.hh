@@ -3,10 +3,6 @@
 
 #include "G4VUserDetectorConstruction.hh"
 
-class G4Material;
-class G4Box;
-class G4LogicalVolume;
-
 class MyG4HWDetectorConstruction : public G4VUserDetectorConstruction{
 public:
   MyG4HWDetectorConstruction();
@@ -30,10 +26,20 @@ protected:
 
 };
 
-inline void MyG4HWDetectorConstruction::SetNoVoxelX(G4int val){fNVoxelX=val;}
-inline void MyG4HWDetectorConstruction::SetNoVoxelY(G4int val){fNVoxelY=val;}
-inline void MyG4HWDetectorConstruction::SetNoVoxelZ(G4int val){fNVoxelZ=val;}
-inline void MyG4HWDetectorConstruction::SetVoxelX(G4double val){fVoxelXHalfOfX=val/2.;}
-inline void MyG4HWDetectorConstruction::SetVoxelY(G4double val){fVoxelXHalfOfY=val/2.;}
-inline void MyG4HWDetectorConstruction::SetVoxelZ(G4double val){fVoxelXHalfOfZ=val/2.;}
+inline void MyG4HWDetectorConstruction::SetNoVoxelX(G4int val) {fNVoxelX=val;}
+inline void MyG4HWDetectorConstruction::SetNoVoxelY(G4int val) {fNVoxelY=val;}
+inline void MyG4HWDetectorConstruction::SetNoVoxelZ(G4int val) {fNVoxelZ=val;}
+inline void MyG4HWDetectorConstruction::SetVoxelX(G4double val)
+{
+  fVoxelXHalfOfX=val/2.;
+}
+inline void MyG4HWDetectorConstruction::SetVoxelY(G4double val)
+{
+  fVoxelXHalfOfY=val/2.;
+}
+inline void MyG4HWDetectorConstruction::SetVoxelZ(G4double val)
+{
+  fVoxelXHalfOfZ=val/2.;
+}
+
 #endif

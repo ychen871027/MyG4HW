@@ -5,7 +5,8 @@
 
 class G4Event;
 
-class MyG4HWEventAction : public G4UserEventAction{
+class MyG4HWEventAction : public G4UserEventAction
+{
 public:
   MyG4HWEventAction();
   ~MyG4HWEventAction();

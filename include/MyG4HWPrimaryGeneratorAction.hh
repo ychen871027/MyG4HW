@@ -4,7 +4,6 @@
 #include "G4VUserPrimaryGeneratorAction.hh"
 
 class G4Event;
-class G4ParticleGun;
 class PrimaryGeneratorAction;
 
 class MyG4HWPrimaryGeneratorAction: public G4VUserPrimaryGeneratorAction

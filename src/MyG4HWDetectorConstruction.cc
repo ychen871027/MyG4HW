@@ -1,13 +1,13 @@
-#include "G4NistManager.hh"
 #include "G4Box.hh"
 #include "G4LogicalVolume.hh"
-#include "G4SystemOfUnits.hh"
-#include "G4VPhysicalVolume.hh"
-#include "G4PVPlacement.hh"
 #include "G4Material.hh"
-#include "G4VisAttributes.hh"
-#include "G4PVParameterised.hh"
+#include "G4NistManager.hh"
 #include "G4SDManager.hh"
+#include "G4SystemOfUnits.hh"
+#include "G4PVParameterised.hh"
+#include "G4PVPlacement.hh"
+#include "G4VisAttributes.hh"
+#include "G4VPhysicalVolume.hh"
 #include "MyG4HWPhantomParameterisation.hh"
 #include "MyG4HWSD.hh"
 #include "MyG4HWDetectorConstruction.hh"
@@ -92,10 +92,8 @@ G4VPhysicalVolume* MyG4HWDetectorConstruction::Construct()
 
   G4ThreeVector voxelSize(fVoxelXHalfOfX, fVoxelXHalfOfY, fVoxelXHalfOfZ);
 
-  std::vector<G4Material*> phantomMat(1, G4water);
-
   MyG4HWPhantomParameterisation* param
-    = new MyG4HWPhantomParameterisation(voxelSize, phantomMat);
+    = new MyG4HWPhantomParameterisation(voxelSize);
   param->SetNoVoxel( fNVoxelX, fNVoxelY, fNVoxelZ );
 
   new G4PVParameterised("phatom",
