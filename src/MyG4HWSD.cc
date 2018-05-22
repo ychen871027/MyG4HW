@@ -44,8 +44,8 @@ G4bool MyG4HWSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
   G4cout << "SD: " << sdName << " edep: " << edep << G4endl;
 
-  G4cout << " world(x,y,z)" << pos_world.x() << ", "
-         << pos_world.y() << ", " << pos_world.z() << G4endl;
+  G4cout << " world(x,y,z)" << pos_world.x()/cm << ", "
+         << pos_world.y()/cm << ", " << pos_world.z()/cm << G4endl;
   G4cout << " copy(z,x,y) " << touchable->GetReplicaNumber(0)
          << "/" << touchable->GetReplicaNumber(1)
          << "/" << touchable->GetReplicaNumber(2) << G4endl;
@@ -53,8 +53,8 @@ G4bool MyG4HWSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
   auto AnaMan = MyG4HWAnalysis::Instance();
   AnaMan-> FillNtuple(pos_world.x()/cm, pos_world.y()/cm, pos_world.z()/cm,
-                      copyNo_x, copyNo_y, copyNo_z, edep);
-  AnaMan-> Fill1DHist(0, pos_world.z()/cm, edep);
+                      copyNo_x, copyNo_y, copyNo_z, edep/MeV);
+  AnaMan-> Fill1DHist(0, pos_world.z()/cm, edep/MeV);
 
   return true;
 }

@@ -43,6 +43,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     G4ThreeVector(sinAlpha*cosPsi, sinAlpha*sinPsi, cosAlpha));
     //  G4ThreeVector(0, 0, -1));
   ::particleGun ->SetParticlePosition( G4ThreeVector(0.*cm,0.*cm,-100.*cm) );
+  //::particleGun ->SetParticleEnergy( 6.*MeV );
   ::particleGun ->SetParticleEnergy( 20.*MeV );
   //fParticleGun->SetParticleEnergy( 6.*MeV );
   ::particleGun ->GeneratePrimaryVertex( anEvent );
