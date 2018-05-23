@@ -29,19 +29,22 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   //=particleTable->FindParticle( particleName="gamma" );
   ::particleGun ->SetParticleDefinition( particle );
 
-  double RnmX     = 5 * (G4UniformRand()*2.0-1.0) *cm;
-  double RnmY     = 5 * (G4UniformRand()*2.0-1.0) *cm;
-  double RnmZ     = 100 *cm;
-  double RnmXY    = sqrt(RnmX * RnmX + RnmY * RnmY);
-  double RnmXYZ   = sqrt(RnmX * RnmX + RnmY * RnmY + RnmZ * RnmZ);
-  double sinAlpha = RnmXY / RnmXYZ;
-  double cosAlpha = RnmZ  / RnmXYZ;
-  double sinPsi   = RnmY  / RnmXY ;
-  double cosPsi   = RnmX  / RnmXY ;
-  G4cout << "RnmX: " << RnmX << " RnmY: " << RnmY << " RnmZ: "<< RnmZ << G4endl;
+  double fieldX     = 5 * (G4UniformRand()*2.0-1.0) *cm;
+  double fieldY     = 5 * (G4UniformRand()*2.0-1.0) *cm;
+  double SSD_Z      = 100 *cm;
+  double fieldXY    = std::sqrt( sqr(fieldX)  + sqr(fieldY) );
+  double dR         = std::sqrt( sqr(fieldXY) + sqr(SSD_Z)  );
+  double sinAlpha   = fieldXY / dR;
+  double cosAlpha   = SSD_Z   / dR;
+  double sinPsi     = fieldY  / fieldXY ;
+  double cosPsi     = fieldX  / fieldXY ;
+
+  G4cout << "Field_X: " << fieldX /cm << " Field_Y: " << fieldY /cm
+         << " SSD: "<< SSD_Z /cm << G4endl;
+
   ::particleGun ->SetParticleMomentumDirection(
     G4ThreeVector(sinAlpha*cosPsi, sinAlpha*sinPsi, cosAlpha));
-    //  G4ThreeVector(0, 0, -1));
+    //G4ThreeVector(0., 0., 1.));
   ::particleGun ->SetParticlePosition( G4ThreeVector(0.*cm,0.*cm,-100.*cm) );
   //::particleGun ->SetParticleEnergy( 6.*MeV );
   ::particleGun ->SetParticleEnergy( 20.*MeV );
