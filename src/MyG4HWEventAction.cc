@@ -5,7 +5,9 @@ MyG4HWEventAction::MyG4HWEventAction() : G4UserEventAction()
 {
 }
 
-MyG4HWEventAction::~MyG4HWEventAction(){}
+MyG4HWEventAction::~MyG4HWEventAction()
+{
+}
 
 void MyG4HWEventAction::BeginOfEventAction(const G4Event* evt)
 {

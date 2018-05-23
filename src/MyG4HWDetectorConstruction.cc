@@ -14,11 +14,13 @@
 
 MyG4HWDetectorConstruction::MyG4HWDetectorConstruction()
   : G4VUserDetectorConstruction(),
-   fNVoxelX{0}, fNVoxelY(0), fNVoxelZ(0)
+    fNVoxelX{0}, fNVoxelY(0), fNVoxelZ(0)
 {
 }
 
-MyG4HWDetectorConstruction::~MyG4HWDetectorConstruction(){}
+MyG4HWDetectorConstruction::~MyG4HWDetectorConstruction()
+{
+}
 
 G4VPhysicalVolume* MyG4HWDetectorConstruction::Construct()
 {

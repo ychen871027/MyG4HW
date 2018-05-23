@@ -14,15 +14,15 @@ MyG4HWAnalysis* MyG4HWAnalysis::Instance()
 }
 
 MyG4HWAnalysis::MyG4HWAnalysis()
-  :fRootFile{nullptr},
-   fNtuple{nullptr},
-   fPos_x(0.),
-   fPos_y(0.),
-   fPos_z(0.),
-   fVoxID_X(0),
-   fVoxID_Y(0),
-   fVoxID_Z(0),
-   fEdep(0.)
+  : fRootFile{nullptr},
+    fNtuple{nullptr},
+    fPos_x(0.),
+    fPos_y(0.),
+    fPos_z(0.),
+    fVoxID_X(0),
+    fVoxID_Y(0),
+    fVoxID_Z(0),
+    fEdep(0.)
 {
    for(G4int i=0; i<kMaxHist; ++i) fHist[i] = nullptr;
    fInstance = this;

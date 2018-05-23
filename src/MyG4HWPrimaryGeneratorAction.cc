@@ -17,7 +17,7 @@ MyG4HWPrimaryGeneratorAction::MyG4HWPrimaryGeneratorAction()
 {
   G4int n_particle = 1;
   ::particleGun = new G4ParticleGun(n_particle);
-  ::pgAction   = new PrimaryGeneratorAction(::particleGun);
+  ::pgAction    = new PrimaryGeneratorAction(::particleGun);
 }
 
 MyG4HWPrimaryGeneratorAction::~MyG4HWPrimaryGeneratorAction()

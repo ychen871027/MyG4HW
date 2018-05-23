@@ -1,5 +1,5 @@
 #ifndef MYG4HW_RUN_ACTION_H_
-#define MYG4_HWRUN_ACTION_H_
+#define MYG4HW_RUN_ACTION_H_
 
 #include "G4UserRunAction.hh"
 

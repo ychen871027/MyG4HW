@@ -1,8 +1,8 @@
-#include "Randomize.hh"
 #include "G4Event.hh"
 #include "G4ParticleGun.hh"
 #include "G4ParticleTable.hh"
 #include "G4SystemOfUnits.hh"
+#include "Randomize.hh"
 #include "PrimaryGeneratorAction.hh"
 #include "MyG4HWPrimaryGeneratorAction.hh"
 
