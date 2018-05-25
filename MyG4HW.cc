@@ -1,13 +1,14 @@
+
 #include "G4RunManager.hh"
 #include "G4UImanager.hh"
 #include "G4GenericPhysicsList.hh"
-#include "Shielding.hh"
+//#include "Shielding.hh"
 #include "G4VisExecutive.hh"
 #include "G4UIExecutive.hh"
 #include "G4SystemOfUnits.hh"
 #include "MyG4HWDetectorConstruction.hh"
 #include "MyG4HWActionInitialization.hh"
-//#include "QGSP_BIC.hh"
+#include "QGSP_BIC.hh"
 
 int main( int argc, char** argv)
 {
@@ -34,7 +35,8 @@ int main( int argc, char** argv)
 
   runManager->SetUserInitialization(theGeometry);
 
-  G4VModularPhysicsList* phys = new Shielding();
+  G4VModularPhysicsList* phys = new QGSP_BIC();
+  //G4VModularPhysicsList* phys = new Shielding();
   runManager->SetUserInitialization(phys);
 
   runManager->SetUserInitialization(new MyG4HWActionInitialization());

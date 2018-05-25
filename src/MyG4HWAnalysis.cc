@@ -51,7 +51,7 @@ void MyG4HWAnalysis::BookTreeAndHist()
   fNtuple->Branch("Vox_ID_Y", &fVoxID_Y, "Vox_ID_Y/I");
   fNtuple->Branch("Vox_ID_Z", &fVoxID_Z, "Vox_ID_Z/I");
   fNtuple->Branch("Edep",     &fEdep,    "Edep/D");
-  fHist[0] = new TH1D("PositionZ[mm]", "PostitionZ", 150, 0., 30*CLHEP::cm);
+  fHist[0] = new TH1D("PositionZ", "PostitionZ", 150, 0., 30*CLHEP::cm/CLHEP::cm);
 
 }
 

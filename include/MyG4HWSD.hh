@@ -1,3 +1,4 @@
+
 #ifndef MYG4HW_SD_H_
 #define MYG4HW_SD_H_
 
@@ -20,6 +21,7 @@ private:
   G4double    fsum_edep;
   G4int       fno_step;
   G4double    fdepth_z;
+  G4double    fVoxelSumDep[61*61*150*2];
 };
 
 #endif
