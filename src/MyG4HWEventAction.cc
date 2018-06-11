@@ -11,7 +11,8 @@ MyG4HWEventAction::~MyG4HWEventAction()
 
 void MyG4HWEventAction::BeginOfEventAction(const G4Event* evt)
 {
-  G4cout << "---------EventID: "<< evt->GetEventID() << "-----------" << G4endl;
+  if ( evt->GetEventID()%1000==0 )
+    G4cout << "---------EventID: "<< evt->GetEventID() << "-----------" << G4endl;
 }
 
 void MyG4HWEventAction::EndOfEventAction(const G4Event*)

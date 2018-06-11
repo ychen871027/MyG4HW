@@ -32,33 +32,13 @@ G4bool MyG4HWSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   if ( edep == 0 ) return false;
   fno_step++;
 
-  //G4cout << "Each track particle " << fno_step << " particle: "
-  //       << particleName <<G4endl;
-
   G4StepPoint* preStepPoint   = aStep->GetPreStepPoint();
   G4TouchableHandle touchable = preStepPoint->GetTouchableHandle();
-
-  G4ThreeVector pos_world = preStepPoint->GetPosition();
-
-  G4String sdName     = touchable->GetVolume()-> GetName();
   G4int    copyNo_x   = touchable->GetReplicaNumber(1);
   G4int    copyNo_y   = touchable->GetReplicaNumber(2);
   G4int    copyNo_z   = touchable->GetReplicaNumber(0);
   G4int idx = copyNo_x + copyNo_y*61 +copyNo_z*61*61;
   fVoxelSumDep[idx] += edep;
-  //G4cout << "SD: " << sdName << " edep: " << edep << G4endl;
-
-  //G4cout << " world(x,y,z)" << pos_world.x()/cm << ", "
-  //       << pos_world.y()/cm << ", " << pos_world.z()/cm
-  //       << " copyNo(z,x,y) " << touchable->GetReplicaNumber(0)
-  //       << "/" << touchable->GetReplicaNumber(1)
-  //       << "/" << touchable->GetReplicaNumber(2) << G4endl;
-
-
-  //auto AnaMan = MyG4HWAnalysis::Instance();
-  //AnaMan-> FillNtuple(pos_world.x()/cm, pos_world.y()/cm, pos_world.z()/cm,
-  //                    copyNo_x, copyNo_y, copyNo_z, edep/MeV);
-  //AnaMan-> Fill1DHist(0, pos_world.z()/cm, edep/MeV);
 
   return true;
 }
@@ -78,9 +58,7 @@ void MyG4HWSD::EndOfEvent(G4HCofThisEvent*)
       AnaMan-> FillNtuple(ix*(5*mm)/cm, iy*(5*mm)/cm, iz*(2*mm)/cm,
                           ix, iy, iz, fVoxelSumDep[idx_id]/MeV);
       if (ix==30&&iy==30) AnaMan-> Fill1DHist(0, iz*(2*mm)/cm, fVoxelSumDep[idx_id]/MeV);
-      //if (fVoxelSumDep[idx_id]>0.)
-      //  std::cout << "ix:iy:iz " << ix << "/" << iy << "/" << iz << " edep " << fVoxelSumDep[idx_id]/MeV
-      //<< std::endl;
+
     }
   }
 }

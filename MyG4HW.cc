@@ -9,6 +9,8 @@
 #include "MyG4HWDetectorConstruction.hh"
 #include "MyG4HWActionInitialization.hh"
 #include "QGSP_BIC.hh"
+#include "MyG4HWPhysicsList.hh"
+#include "ExN02PhysicsList.hh"
 
 int main( int argc, char** argv)
 {
@@ -35,8 +37,10 @@ int main( int argc, char** argv)
 
   runManager->SetUserInitialization(theGeometry);
 
-  G4VModularPhysicsList* phys = new QGSP_BIC();
+  //G4VModularPhysicsList* phys = new QGSP_BIC();
   //G4VModularPhysicsList* phys = new Shielding();
+  G4VUserPhysicsList* phys = new MyG4HWPhysicsList;
+  //G4VUserPhysicsList* phys = new ExN02PhysicsList;
   runManager->SetUserInitialization(phys);
 
   runManager->SetUserInitialization(new MyG4HWActionInitialization());
