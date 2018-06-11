@@ -3,6 +3,7 @@
 ## Usage
 
 ```bash
+export MYG4=../lib
 cmake -DGeant4_DIR=$MYG4 ../MyG4HW
 ```
 
