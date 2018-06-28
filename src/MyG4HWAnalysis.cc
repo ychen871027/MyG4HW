@@ -52,7 +52,7 @@ void MyG4HWAnalysis::BookTreeAndHist()
   fNtuple->Branch("Vox_ID_Z", &fVoxID_Z, "Vox_ID_Z/I");
   fNtuple->Branch("Edep",     &fEdep,    "Edep/D");
   fHist[0] = new TH1D("PositionZ", "PostitionZ", 150, 0., 30*CLHEP::cm/CLHEP::cm);
-
+  fHist[1] = new TH1D("BEnergy", "BEnergy", 24, 0., 6*CLHEP::MeV);
 }
 
 void MyG4HWAnalysis::SaveFile()
