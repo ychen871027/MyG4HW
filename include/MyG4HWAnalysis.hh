@@ -20,9 +20,13 @@ public:
   void FillNtuple(G4double pos_x, G4double pos_y, G4double pos_z,
                   G4int vox_id_x, G4int vox_id_y, G4int vox_id_z,
                   G4double edep);
+  void SetSeedNum(G4int idxN);
+  int GetSeedNum();
 
 private:
   static MyG4HWAnalysis* fInstance;
+  
+  int       fSeedNum;
   TFile* fRootFile;
   TTree* fNtuple;
   TH1D*  fHist[kMaxHist];
@@ -35,4 +39,7 @@ private:
   G4int    fVoxID_Z;
   G4double fEdep;
 };
+inline void MyG4HWAnalysis::SetSeedNum(int idxN) {fSeedNum=idxN;}
+inline int MyG4HWAnalysis::GetSeedNum() {return fSeedNum;}
+
 #endif

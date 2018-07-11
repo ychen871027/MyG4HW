@@ -37,6 +37,14 @@ MyG4HWAnalysis::~MyG4HWAnalysis()
 void MyG4HWAnalysis::BookTreeAndHist()
 {
   G4String fileName = "MyG4HWDepInfo.root";
+  if ( fSeedNum > 0 ) {
+    fileName += ".root.";
+    fileName += std::to_string( fSeedNum );
+  } else {
+    fileName += ".root";
+  }
+  std::cout << "ana outname: " << fileName << std::endl;
+  
   fRootFile = new TFile(fileName, "RECREATE");
   if (!fRootFile) {
     G4cout << "can not create output root file" << G4endl;

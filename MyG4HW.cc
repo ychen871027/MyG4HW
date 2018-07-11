@@ -9,8 +9,9 @@
 #include "MyG4HWDetectorConstruction.hh"
 #include "MyG4HWActionInitialization.hh"
 #include "QGSP_BIC.hh"
-#include "MyG4HWPhysicsList.hh"
-#include "ExN02PhysicsList.hh"
+//#include "MyG4HWPhysicsList.hh"
+//#include "ExN02PhysicsList.hh"
+#include "MyG4HWAnalysis.hh"
 
 int main( int argc, char** argv)
 {
@@ -36,10 +37,18 @@ int main( int argc, char** argv)
   theGeometry->SetVoxelZ(VoxelZ);
 
   runManager->SetUserInitialization(theGeometry);
+  
+  auto AnaMan = MyG4HWAnalysis::Instance();
+  if ( argc > 2 ) {
+    AnaMan-> SetSeedNum(atoi(argv[2]));
+  } else {
+    AnaMan-> SetSeedNum(-1);
+  }
+  std::cout << "SaveRootFileName: " << argv[2] << std::endl;
 
-  //G4VModularPhysicsList* phys = new QGSP_BIC();
+  G4VModularPhysicsList* phys = new QGSP_BIC();
   //G4VModularPhysicsList* phys = new Shielding();
-  G4VUserPhysicsList* phys = new MyG4HWPhysicsList;
+  //G4VUserPhysicsList* phys = new MyG4HWPhysicsList;
   //G4VUserPhysicsList* phys = new ExN02PhysicsList;
   runManager->SetUserInitialization(phys);
 

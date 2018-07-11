@@ -26,9 +26,9 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
   G4String particleName;
   G4ParticleDefinition* particle;
-  std::cout << "run GeneratePrimaries " << std::endl;
+  //std::cout << "run GeneratePrimaries " << std::endl;
   auto AnaMan = MyG4HWAnalysis::Instance();
-  bool pencilBeam = false;
+  bool pencilBeam = true;//false;
   if (pencilBeam == true) {
     particle = particleTable-> FindParticle( particleName="e-" );
     ::particleGun -> SetParticleDefinition( particle );

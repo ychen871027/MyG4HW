@@ -25,7 +25,7 @@ MyG4HWDetectorConstruction::~MyG4HWDetectorConstruction()
 G4VPhysicalVolume* MyG4HWDetectorConstruction::Construct()
 {
   G4NistManager* nist = G4NistManager::Instance();
-  G4Material* G4air   = nist->FindOrBuildMaterial("G4_AIR");
+  G4Material* G4air   = nist->FindOrBuildMaterial("G4_Galactic");//G4_AIR");
   G4Material* G4water = nist->FindOrBuildMaterial("G4_WATER");
 
   const G4double world_x = 300*mm;
