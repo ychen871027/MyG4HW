@@ -12,12 +12,18 @@
 //#include "MyG4HWPhysicsList.hh"
 //#include "ExN02PhysicsList.hh"
 #include "MyG4HWAnalysis.hh"
+#include "MyG4HWPL.hh"
 
 int main( int argc, char** argv)
 {
 
   G4RunManager* runManager = new G4RunManager;
   G4cout << "MyG4HW:: create runManager" << G4endl;
+  G4long myseed = 1234;
+  myseed  = atoi(argv[3]);
+  G4Random::setTheEngine(new CLHEP::MTwistEngine);
+  //G4Random::setTheEngine(new CLHEP::RanecuEngine);
+  G4Random::setTheSeed(myseed);
   MyG4HWDetectorConstruction* theGeometry = 0;
 
   theGeometry = new MyG4HWDetectorConstruction();
@@ -37,7 +43,7 @@ int main( int argc, char** argv)
   theGeometry->SetVoxelZ(VoxelZ);
 
   runManager->SetUserInitialization(theGeometry);
-  
+
   auto AnaMan = MyG4HWAnalysis::Instance();
   if ( argc > 2 ) {
     AnaMan-> SetSeedNum(atoi(argv[2]));
@@ -45,11 +51,20 @@ int main( int argc, char** argv)
     AnaMan-> SetSeedNum(-1);
   }
   std::cout << "SaveRootFileName: " << argv[2] << std::endl;
+  AnaMan-> SetNoVoxelX(NVoxelX);
+  AnaMan-> SetNoVoxelY(NVoxelY);
+  AnaMan-> SetNoVoxelZ(NVoxelZ);
+  AnaMan-> SetVoxelX(VoxelX);
+  AnaMan-> SetVoxelY(VoxelY);
+  AnaMan-> SetVoxelZ(VoxelZ);
 
-  G4VModularPhysicsList* phys = new QGSP_BIC();
+
+  //G4VModularPhysicsList* phys = new QGSP_BIC();
+  //phys->SetDefaultCutValue( 1.*CLHEP::mm );
   //G4VModularPhysicsList* phys = new Shielding();
   //G4VUserPhysicsList* phys = new MyG4HWPhysicsList;
   //G4VUserPhysicsList* phys = new ExN02PhysicsList;
+  G4VModularPhysicsList* phys = new MyG4HWPL();
   runManager->SetUserInitialization(phys);
 
   runManager->SetUserInitialization(new MyG4HWActionInitialization());

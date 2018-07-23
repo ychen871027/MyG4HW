@@ -17,11 +17,21 @@ public:
   virtual G4bool ProcessHits(G4Step* aStep, G4TouchableHistory*);
   virtual void   EndOfEvent(G4HCofThisEvent*);
 
+//protected:
+//  G4int fNVoxelX;
+//  G4int fNVoxelY;
+//  G4int fNVoxelZ;
+//  G4double fVoxelXX;
+//  G4double fVoxelXY;
+//  G4double fVoxelXZ;
+
 private:
   G4double    fsum_edep;
   G4int       fno_step;
   G4double    fdepth_z;
-  G4double    fVoxelSumDep[61*61*150*2];
+  //G4double    fVoxelSumDep[61*61*150*2];
+  G4double    fVoxelSumDep[61][61][150];
+  G4int    fVoxelN[61][61][150];
 };
 
 #endif

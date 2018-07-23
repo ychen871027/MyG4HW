@@ -28,12 +28,15 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   G4ParticleDefinition* particle;
   //std::cout << "run GeneratePrimaries " << std::endl;
   auto AnaMan = MyG4HWAnalysis::Instance();
+  //bool pencilBeam = false;
   bool pencilBeam = true;//false;
   if (pencilBeam == true) {
-    particle = particleTable-> FindParticle( particleName="e-" );
+    //particle = particleTable-> FindParticle( particleName="e-" );
+    particle = particleTable-> FindParticle( particleName="gamma" );
     ::particleGun -> SetParticleDefinition( particle );
     ::particleGun -> SetParticleMomentumDirection(G4ThreeVector(0., 0., 1.));
-    ::particleGun -> SetParticleEnergy( 20.*MeV );
+    ::particleGun -> SetParticleEnergy( 6.*MeV );
+    //::particleGun -> SetParticleEnergy( 20.*MeV );
 
   }else{
     particle = particleTable-> FindParticle( particleName="gamma" );
@@ -87,7 +90,12 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     xmax = fieldX/2./fSSD;
     ymax = fieldY/2./fSSD;
 
-    while (!(abs(x)<xmax && abs(y)<ymax)) {
+    if (std::abs(x)<xmax && std::abs(y)<ymax)
+    {
+      std::cout << "runnnntrue" << std::endl;
+      std::cout << std::abs(x) << "/" << xmax << std::endl;
+    }
+    while (!(std::abs(x)<xmax && std::abs(y)<ymax)) {
       dcos = G4RandFlat::shoot(cosAlpha, 1.0);
       dsin = sqrt(1.-sqr(dcos));
       dphi = G4RandFlat::shoot(0., CLHEP::twopi);
@@ -98,7 +106,8 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     }
     z=dcos;
 
-    //std::cout << "generating the energy starting " << std::endl;
+    //std::cout << "generating the energy starting "<< x << "/" << y <<
+    //          "/" << z << "/" << xmax << "/" << ymax << std::endl;
     double deK = 0.;
     int iEbin = 0;
     double sumkEbin = 0.;
@@ -125,7 +134,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     AnaMan-> Fill1DHist(1, deK, 1);
     //if (iEbin==1)
     //if( deK < 250.*keV )
-    std::cout << "generating the energy: " << deK << "iEbin" << iEbin << std::endl;
+    //std::cout << "generating the energy: " << deK << "iEbin" << iEbin << std::endl;
     ::particleGun -> SetParticleMomentumDirection(G4ThreeVector(x, y, z));
     //::particleGun ->SetParticleEnergy( 6.*MeV );
     ::particleGun ->SetParticleEnergy( deK );

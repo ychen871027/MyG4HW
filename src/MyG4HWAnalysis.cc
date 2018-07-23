@@ -36,7 +36,8 @@ MyG4HWAnalysis::~MyG4HWAnalysis()
 
 void MyG4HWAnalysis::BookTreeAndHist()
 {
-  G4String fileName = "MyG4HWDepInfo.root";
+  G4String fileName = "MyG4HWDepInfo.electron";
+  //G4String fileName = "MyG4HWDepInfo.gamma";
   if ( fSeedNum > 0 ) {
     fileName += ".root.";
     fileName += std::to_string( fSeedNum );
@@ -44,7 +45,7 @@ void MyG4HWAnalysis::BookTreeAndHist()
     fileName += ".root";
   }
   std::cout << "ana outname: " << fileName << std::endl;
-  
+
   fRootFile = new TFile(fileName, "RECREATE");
   if (!fRootFile) {
     G4cout << "can not create output root file" << G4endl;
@@ -60,7 +61,32 @@ void MyG4HWAnalysis::BookTreeAndHist()
   fNtuple->Branch("Vox_ID_Z", &fVoxID_Z, "Vox_ID_Z/I");
   fNtuple->Branch("Edep",     &fEdep,    "Edep/D");
   fHist[0] = new TH1D("PositionZ", "PostitionZ", 150, 0., 30*CLHEP::cm/CLHEP::cm);
-  fHist[1] = new TH1D("BEnergy", "BEnergy", 24, 0., 6*CLHEP::MeV);
+  fHist[1] = new TH1D("BEnergy", "BEnergy", 240, 0., 6*CLHEP::MeV);
+  fHist[2] = new TH1D("PositionX", "PostitionX", 150, -15.*CLHEP::cm/CLHEP::cm,
+                      15.*CLHEP::cm/CLHEP::cm);
+
+  for (G4int i=0; i<61; ++i)
+  {
+    for (G4int j=0; j<61; ++j)
+    {
+      for (G4int k=0; k<150; ++k)
+      {
+        fVoxelSumDept[i][j][k]=0.;
+      }
+    }
+
+  }
+
+}
+
+void MyG4HWAnalysis:: SetDosePerVoxel( int ix, int iy, int iz, double edep)
+{
+  fVoxelSumDept[ix][iy][iz] += edep;
+}
+
+double MyG4HWAnalysis:: GetDosePerVoxel(int ix, int iy, int iz)
+{
+  return fVoxelSumDept[ix][iy][iz];
 }
 
 void MyG4HWAnalysis::SaveFile()
