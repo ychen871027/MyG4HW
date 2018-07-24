@@ -31,12 +31,12 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   //bool pencilBeam = false;
   bool pencilBeam = true;//false;
   if (pencilBeam == true) {
-    //particle = particleTable-> FindParticle( particleName="e-" );
-    particle = particleTable-> FindParticle( particleName="gamma" );
+    particle = particleTable-> FindParticle( particleName="e-" );
+    //particle = particleTable-> FindParticle( particleName="gamma" );
     ::particleGun -> SetParticleDefinition( particle );
     ::particleGun -> SetParticleMomentumDirection(G4ThreeVector(0., 0., 1.));
-    ::particleGun -> SetParticleEnergy( 6.*MeV );
-    //::particleGun -> SetParticleEnergy( 20.*MeV );
+    //::particleGun -> SetParticleEnergy( 6.*MeV );
+    ::particleGun -> SetParticleEnergy( 20.*MeV );
 
   }else{
     particle = particleTable-> FindParticle( particleName="gamma" );

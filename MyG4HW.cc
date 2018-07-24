@@ -12,7 +12,8 @@
 //#include "MyG4HWPhysicsList.hh"
 //#include "ExN02PhysicsList.hh"
 #include "MyG4HWAnalysis.hh"
-#include "MyG4HWPL.hh"
+//#include "MyG4HWPL.hh"
+#include "physicslist_cug4.h"
 
 int main( int argc, char** argv)
 {
@@ -64,7 +65,8 @@ int main( int argc, char** argv)
   //G4VModularPhysicsList* phys = new Shielding();
   //G4VUserPhysicsList* phys = new MyG4HWPhysicsList;
   //G4VUserPhysicsList* phys = new ExN02PhysicsList;
-  G4VModularPhysicsList* phys = new MyG4HWPL();
+  //G4VModularPhysicsList* phys = new MyG4HWPL();
+  G4VUserPhysicsList* phys = new cug4::PhysicsListCuG4();
   runManager->SetUserInitialization(phys);
 
   runManager->SetUserInitialization(new MyG4HWActionInitialization());
