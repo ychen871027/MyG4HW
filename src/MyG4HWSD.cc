@@ -40,7 +40,7 @@ G4bool MyG4HWSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   fsum_edep = fsum_edep + edep;
 
   G4String particleName = aStep->GetTrack()-> GetDefinition()-> GetParticleName();
-  if ( edep == 0 ) return false;
+  //if ( edep == 0 ) return false;
   fno_step++;
 
   G4StepPoint* preStepPoint   = aStep->GetPreStepPoint();
@@ -53,6 +53,14 @@ G4bool MyG4HWSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   G4int idx = copyNo_z + copyNo_x*150 + copyNo_y*150*61;
   fVoxelSumDep[copyNo_x][copyNo_y][copyNo_z] += edep;
   fVoxelN[copyNo_x][copyNo_y][copyNo_z] += 1;
+
+  G4ThreeVector pos_world = preStepPoint->GetPosition();
+  //G4cout << " world(x,y,z)" << pos_world.x() << ", " << pos_world.y()
+  //       <<", "<<pos_world.z()<< G4endl;
+  auto AnaMan = MyG4HWAnalysis::Instance();
+  AnaMan-> FillNtuple( pos_world.x(),pos_world.y(),pos_world.z(),
+                      copyNo_x, copyNo_y, copyNo_z, edep,
+                      aStep->GetTrack()->GetParentID(), aStep->GetTrack()->GetTrackID());
 
   return true;
 }
@@ -72,8 +80,8 @@ void MyG4HWSD::EndOfEvent(G4HCofThisEvent*)
       AnaMan-> SetDosePerVoxel( ix, iy, iz, fVoxelSumDep[ix][iy][iz]/MeV);
       //if(fVoxelSumDep[idx_id]==0.)continue;
       if(fVoxelSumDep[ix][iy][iz]==0.)continue;
-      AnaMan-> FillNtuple(ix*(5*mm)/cm, iy*(5*mm)/cm, iz*(2*mm)/cm,
-                          ix, iy, iz,fVoxelSumDep[ix][iy][iz]/MeV);
+      // AnaMan-> FillNtuple(ix*(5*mm)/cm, iy*(5*mm)/cm, iz*(2*mm)/cm,
+      //                     ix, iy, iz,fVoxelSumDep[ix][iy][iz]/MeV);
       //                    ix, iy, iz, fVoxelSumDep[idx_id]/MeV);
       //if (ix==30&&iy==30) AnaMan-> Fill1DHist(0, iz*(2*mm)/cm, fVoxelSumDep[idx_id]/MeV);
       if (ix==30&&iy==30) AnaMan-> Fill1DHist(0, iz*(2*mm)/cm, fVoxelSumDep[ix][iy][iz]/MeV);

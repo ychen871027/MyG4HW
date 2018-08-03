@@ -26,7 +26,6 @@ public:
   virtual void SetCuts();
 
   void SetVerbose(int level);
-
 };
 
 } // namespace

@@ -22,7 +22,9 @@ MyG4HWAnalysis::MyG4HWAnalysis()
     fVoxID_X(0),
     fVoxID_Y(0),
     fVoxID_Z(0),
-    fEdep(0.)
+    fEdep(0.),
+    fTrkp_ID(0),
+    fTrk_ID(0)
 {
    for(G4int i=0; i<kMaxHist; ++i) fHist[i] = nullptr;
    fInstance = this;
@@ -60,6 +62,8 @@ void MyG4HWAnalysis::BookTreeAndHist()
   fNtuple->Branch("Vox_ID_Y", &fVoxID_Y, "Vox_ID_Y/I");
   fNtuple->Branch("Vox_ID_Z", &fVoxID_Z, "Vox_ID_Z/I");
   fNtuple->Branch("Edep",     &fEdep,    "Edep/D");
+  fNtuple->Branch("TrkP_ID",  &fTrkp_ID, "TrkP_ID/I");
+  fNtuple->Branch("Trk_ID",  &fTrk_ID, "Trk_ID/I");
   fHist[0] = new TH1D("PositionZ", "PostitionZ", 150, 0., 30*CLHEP::cm/CLHEP::cm);
   fHist[1] = new TH1D("BEnergy", "BEnergy", 240, 0., 6*CLHEP::MeV);
   fHist[2] = new TH1D("PositionX", "PostitionX", 150, -15.*CLHEP::cm/CLHEP::cm,
@@ -109,7 +113,7 @@ void MyG4HWAnalysis::Fill1DHist(G4int idx, G4double ibin_x, G4double iwet)
 void MyG4HWAnalysis::FillNtuple(
                                 G4double pos_x, G4double pos_y, G4double pos_z,
                                 G4int vox_id_x, G4int vox_id_y, G4int vox_id_z,
-                                G4double edep)
+                                G4double edep, G4int trkp_ID, G4int trk_ID)
 {
   fPos_x   = pos_x;
   fPos_y   = pos_y;
@@ -118,6 +122,8 @@ void MyG4HWAnalysis::FillNtuple(
   fVoxID_Y = vox_id_y;
   fVoxID_Z = vox_id_z;
   fEdep    = edep;
+  fTrkp_ID = trkp_ID;
+  fTrk_ID  = trk_ID;
 
   fNtuple->Fill();
 }

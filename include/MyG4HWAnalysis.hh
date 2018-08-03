@@ -41,7 +41,7 @@ public:
   void Fill1DHist(G4int idx, G4double ibin_x, G4double iwet);
   void FillNtuple(G4double pos_x, G4double pos_y, G4double pos_z,
                   G4int vox_id_x, G4int vox_id_y, G4int vox_id_z,
-                  G4double edep);
+                  G4double edep, G4int trkp_ID, G4int trk_ID);
 
 private:
   static MyG4HWAnalysis* fInstance;
@@ -59,6 +59,8 @@ private:
   G4int    fVoxID_X;
   G4int    fVoxID_Y;
   G4int    fVoxID_Z;
+  G4int    fTrkp_ID;
+  G4int    fTrk_ID;
   G4double fEdep;
   G4double fBeamE;
   G4double    fVoxelSumDept[61][61][150];

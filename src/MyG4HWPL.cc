@@ -1,7 +1,7 @@
 //#include "MyG4HWEMOld.hh"
 //#include "MyG4HWEM.hh"
-#include "G4EmStandardPhysics.hh"
-//#include "G4EmStandardPhysics_option1.hh"
+//#include "G4EmStandardPhysics.hh"
+#include "G4EmStandardPhysics_option4.hh"
 #include "MyG4HWPL.hh"
 #include "G4VModularPhysicsList.hh"
 #include "G4EmParameters.hh"
@@ -22,8 +22,8 @@ MyG4HWPL::MyG4HWPL(): G4VModularPhysicsList()
   //RegisterPhysics( new MyG4HWEMOld(1) );
   //RegisterPhysics( new MyG4HWEM(ver) );
   //RegisterPhysics( new G4EmStandardPhysics(ver) );
-  RegisterPhysics( new G4EmStandardPhysics(ver) );
-  //RegisterPhysics( new G4EmStandardPhysics_option1(ver) );
+  //RegisterPhysics( new G4EmStandardPhysics(ver) );
+  RegisterPhysics( new G4EmStandardPhysics_option4(ver) );
   //RegisterPhysics(new StepLimiterBuilder());
   G4EmParameters* param = G4EmParameters::Instance();
   //param->SetMaxEnergy(10*TeV);

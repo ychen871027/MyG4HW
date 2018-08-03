@@ -28,7 +28,7 @@
 #include "G4Proton.hh"
 #include "G4hMultipleScattering.hh"
 #include "G4hIonisation.hh"
-
+#include "G4StepLimiter.hh"
 //#include "cugeant4/connector/physicslist_cug4.h"
 #include "physicslist_cug4.h"
 //#include "config.h"
@@ -38,6 +38,7 @@ namespace cug4 {
 // --------------------------------------------------------------------------
 PhysicsListCuG4::PhysicsListCuG4()
 {
+  //defaultCutValue = 1.0 * km;
   defaultCutValue = 1.0 * mm;
   SetVerboseLevel(1);
 }
@@ -63,7 +64,7 @@ void PhysicsListCuG4::ConstructProcess()
 
   G4PhysicsListHelper* ph = G4PhysicsListHelper::GetPhysicsListHelper();
   assert( ph != NULL );
-
+  //auto theParticleIterator=GetParticleIterator();
   theParticleIterator-> reset();
 
   // multiple scattering for e-
@@ -75,8 +76,8 @@ void PhysicsListCuG4::ConstructProcess()
   ep_msc->SetStepLimitType(fMinimal);
 
   // multiple scattering for protons
-  G4hMultipleScattering *p_msc = new G4hMultipleScattering();
-  p_msc->SetStepLimitType(fMinimal);
+  // G4hMultipleScattering *p_msc = new G4hMultipleScattering();
+  // p_msc->SetStepLimitType(fMinimal);
 
   while( (*theParticleIterator)() ){
     G4ParticleDefinition* particle = theParticleIterator-> value();
@@ -89,14 +90,15 @@ void PhysicsListCuG4::ConstructProcess()
       ph-> RegisterProcess(em_msc, particle);
       ph-> RegisterProcess(new G4eIonisation,         particle);
       ph-> RegisterProcess(new G4eBremsstrahlung,     particle);
+      //ph->RegisterProcess(new G4StepLimiter(), particle);
     } else if (particle_name == "e+") {
       ph-> RegisterProcess(ep_msc, particle);
       ph-> RegisterProcess(new G4eIonisation,         particle);
       ph-> RegisterProcess(new G4eBremsstrahlung,     particle);
       ph-> RegisterProcess(new G4eplusAnnihilation,   particle);
-    } else if (particle_name == "proton") {
-      ph-> RegisterProcess(p_msc, particle);
-      ph-> RegisterProcess(new G4hIonisation,         particle);
+    // } else if (particle_name == "proton") {
+    //   ph-> RegisterProcess(p_msc, particle);
+    //   ph-> RegisterProcess(new G4hIonisation,         particle);
     }
   }
   G4EmProcessOptions em_options;

@@ -14,7 +14,7 @@
 #include "MyG4HWAnalysis.hh"
 //#include "MyG4HWPL.hh"
 #include "physicslist_cug4.h"
-
+//#include "G4StepLimiterPhysics.hh"
 int main( int argc, char** argv)
 {
 
@@ -67,6 +67,7 @@ int main( int argc, char** argv)
   //G4VUserPhysicsList* phys = new ExN02PhysicsList;
   //G4VModularPhysicsList* phys = new MyG4HWPL();
   G4VUserPhysicsList* phys = new cug4::PhysicsListCuG4();
+  //phys->RegisterPhysics(new G4StepLimiterPhysics());
   runManager->SetUserInitialization(phys);
 
   runManager->SetUserInitialization(new MyG4HWActionInitialization());
