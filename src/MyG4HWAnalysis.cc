@@ -15,16 +15,7 @@ MyG4HWAnalysis* MyG4HWAnalysis::Instance()
 
 MyG4HWAnalysis::MyG4HWAnalysis()
   : fRootFile{nullptr},
-    fNtuple{nullptr},
-    fPos_x(0.),
-    fPos_y(0.),
-    fPos_z(0.),
-    fVoxID_X(0),
-    fVoxID_Y(0),
-    fVoxID_Z(0),
-    fEdep(0.),
-    fTrkp_ID(0),
-    fTrk_ID(0)
+    fNtuple{nullptr}
 {
    for(G4int i=0; i<kMaxHist; ++i) fHist[i] = nullptr;
    fInstance = this;
@@ -38,16 +29,20 @@ MyG4HWAnalysis::~MyG4HWAnalysis()
 
 void MyG4HWAnalysis::BookTreeAndHist()
 {
-  G4String fileName = "MyG4HWDepInfo.electron";
+  G4String fileName = "MyG4HWDepInfo.";
   //G4String fileName = "MyG4HWDepInfo.gamma";
+  fileName = fileName + GetBeamType() + GetMatType() + ".";
   if ( fSeedNum > 0 ) {
-    fileName += ".root.";
+    fileName += "root.";
     fileName += std::to_string( fSeedNum );
   } else {
-    fileName += ".root";
+    fileName += "root";
   }
   std::cout << "ana outname: " << fileName << std::endl;
-
+  std::cout << "get the env:  " << getenv("ROOTOUT") << std::endl;
+  G4String rootout = getenv("ROOTOUT");
+  fileName =  rootout + "/" + fileName;
+  std::cout << __LINE__ << "outputrootfile: " << fileName << std::endl;
   fRootFile = new TFile(fileName, "RECREATE");
   if (!fRootFile) {
     G4cout << "can not create output root file" << G4endl;
@@ -68,6 +63,12 @@ void MyG4HWAnalysis::BookTreeAndHist()
   fHist[1] = new TH1D("BEnergy", "BEnergy", 240, 0., 6*CLHEP::MeV);
   fHist[2] = new TH1D("PositionX", "PostitionX", 150, -15.*CLHEP::cm/CLHEP::cm,
                       15.*CLHEP::cm/CLHEP::cm);
+  fHist[3] = new TH1D("sxdep", "sxdep", 600, -300.*CLHEP::mm/CLHEP::mm, 300.*CLHEP::mm/CLHEP::mm);
+  fHist[4] = new TH1D("sydep", "sydep", 600, -300.*CLHEP::mm/CLHEP::mm, 300.*CLHEP::mm/CLHEP::mm);
+  fHist[5] = new TH1D("szdep", "szdep", 155, 0., 155.*CLHEP::mm/CLHEP::mm);
+  fHist[6] = new TH1D("szdepe", "szdepe", 200, 0., 20.*CLHEP::MeV/CLHEP::MeV);
+  fHist[7] = new TH1D("trklength", "trklength", 1100, 0., 1100.*CLHEP::mm/CLHEP::mm);
+  fHist[8] = new TH1D("trkNum", "trkNum", 1000, 0., 1000.);
 
   for (G4int i=0; i<61; ++i)
   {

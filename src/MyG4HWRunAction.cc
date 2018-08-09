@@ -32,7 +32,7 @@ void MyG4HWRunAction::EndOfRunAction(const G4Run* aRun)
   {
     for (int iy=0; iy < 61; iy++ ){
       for (int iz=0; iz < 150; iz++ ){
-        if (AnaMan->GetDosePerVoxel(ix, iy, iz)>0)std::cout << "30:/30 / "
+        if (AnaMan->GetDosePerVoxel(ix, iy, iz)>0)std::cout << "X:Y:Z:dep:: "
           <<ix<<"-"<<iy<<"-"<<iz<<"-"<< AnaMan->GetDosePerVoxel(ix, iy, iz) << std::endl;
       }
     }
@@ -41,11 +41,12 @@ void MyG4HWRunAction::EndOfRunAction(const G4Run* aRun)
 
   int totev = AnaMan-> GetTotNum();
   G4String fileName = "result_dep";
+  fileName = fileName + AnaMan-> GetBeamType() + AnaMan-> GetMatType() + ".";
   if ( AnaMan-> GetSeedNum() > 0 ) {
-    fileName += ".dat.";
+    fileName += "dat.";
     fileName += std::to_string( AnaMan-> GetSeedNum() );
   } else {
-    fileName += ".dat";
+    fileName += "dat";
   }
   int fNVoxelX = AnaMan-> GetNoVoxelX();
   int fNVoxelY = AnaMan-> GetNoVoxelY();
@@ -54,6 +55,10 @@ void MyG4HWRunAction::EndOfRunAction(const G4Run* aRun)
   double fVoxelXX = AnaMan-> GetVoxelX();
   double fVoxelXY = AnaMan-> GetVoxelY();
   double fVoxelXZ = AnaMan-> GetVoxelZ();
+
+  G4String rootout = getenv("ROOTOUT");
+  fileName =  rootout + "/" + fileName;
+  std::cout << __LINE__ << "outputrootfile: " << fileName << std::endl;
 
   std::ofstream  file(fileName);
   file << "### Total number of events processed" << G4endl;

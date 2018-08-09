@@ -28,6 +28,10 @@ public:
 private:
   G4double    fsum_edep;
   G4int       fno_step;
+  G4int       fno_trk;
+  G4double    fno_trkE;
+  G4int       fno_stepn;
+  G4double    fno_stepL;
   G4double    fdepth_z;
   //G4double    fVoxelSumDep[61*61*150*2];
   G4double    fVoxelSumDep[61][61][150];

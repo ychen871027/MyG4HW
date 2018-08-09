@@ -5,7 +5,7 @@ class TFile;
 class TTree;
 class TH1D;
 
-const G4int kMaxHist=3;
+const G4int kMaxHist=20;
 
 class MyG4HWAnalysis{
 public:
@@ -27,6 +27,14 @@ public:
   void SetVoxelX(G4double val);
   void SetVoxelY(G4double val);
   void SetVoxelZ(G4double val);
+  void SetBeamType(G4String val);
+  G4String GetBeamType();
+  void SetMatType(G4String val);
+  G4String GetMatType();
+  void SetCutValue(G4double val);
+  G4double GetCutValue();
+  void SetStepFlag(G4double val);
+  G4double GetStepFlag();
 
   int GetNoVoxelX();
   int GetNoVoxelY();
@@ -70,8 +78,52 @@ private:
   G4double fvX;
   G4double fvY;
   G4double fvZ;
+  G4double fstepflag;
+  G4double fcutvalue;
+  G4String fbeam;
+  G4String fmat;
 
 };
+
+inline void MyG4HWAnalysis::SetStepFlag(G4double val)
+{
+  fstepflag=val;
+}
+
+inline G4double MyG4HWAnalysis::GetStepFlag()
+{
+  return fstepflag;
+}
+
+inline void MyG4HWAnalysis::SetCutValue(G4double val)
+{
+  fcutvalue=val;
+}
+
+inline G4double MyG4HWAnalysis::GetCutValue()
+{
+  return fcutvalue;
+}
+
+inline void MyG4HWAnalysis::SetBeamType(G4String val)
+{
+  fbeam=val;
+}
+
+inline G4String MyG4HWAnalysis::GetBeamType()
+{
+  return fbeam;
+}
+
+inline void MyG4HWAnalysis::SetMatType(G4String val)
+{
+  fmat=val;
+}
+
+inline G4String MyG4HWAnalysis::GetMatType()
+{
+  return fmat;
+}
 
 inline void MyG4HWAnalysis::SetSeedNum(int idxN)
 {

@@ -25,7 +25,7 @@ MyG4HWPL::MyG4HWPL(): G4VModularPhysicsList()
   //RegisterPhysics( new G4EmStandardPhysics(ver) );
   RegisterPhysics( new G4EmStandardPhysics_option4(ver) );
   //RegisterPhysics(new StepLimiterBuilder());
-  G4EmParameters* param = G4EmParameters::Instance();
+  //G4EmParameters* param = G4EmParameters::Instance();
   //param->SetMaxEnergy(10*TeV);
   //G4ProductionCutsTable::GetProductionCutsTable()->
   //  SetEnergyRange(100*CLHEP::eV, 1*CLHEP::GeV);

@@ -32,6 +32,7 @@
 //#include "cugeant4/connector/physicslist_cug4.h"
 #include "physicslist_cug4.h"
 //#include "config.h"
+#include "MyG4HWAnalysis.hh"
 
 namespace cug4 {
 
@@ -39,7 +40,10 @@ namespace cug4 {
 PhysicsListCuG4::PhysicsListCuG4()
 {
   //defaultCutValue = 1.0 * km;
-  defaultCutValue = 1.0 * mm;
+  auto AnaMan = MyG4HWAnalysis::Instance();
+  defaultCutValue = AnaMan-> GetCutValue() * mm;
+  std::cout << " phys running cut value: " << defaultCutValue / mm << "mm" << std::endl;
+  //defaultCutValue = 1.0 * mm;
   SetVerboseLevel(1);
 }
 
@@ -60,11 +64,12 @@ void PhysicsListCuG4::ConstructParticle()
 // --------------------------------------------------------------------------
 void PhysicsListCuG4::ConstructProcess()
 {
+  auto AnaMan = MyG4HWAnalysis::Instance();
   AddTransportation();
 
   G4PhysicsListHelper* ph = G4PhysicsListHelper::GetPhysicsListHelper();
   assert( ph != NULL );
-  //auto theParticleIterator=GetParticleIterator();
+  auto theParticleIterator=GetParticleIterator();
   theParticleIterator-> reset();
 
   // multiple scattering for e-
@@ -90,7 +95,12 @@ void PhysicsListCuG4::ConstructProcess()
       ph-> RegisterProcess(em_msc, particle);
       ph-> RegisterProcess(new G4eIonisation,         particle);
       ph-> RegisterProcess(new G4eBremsstrahlung,     particle);
-      //ph->RegisterProcess(new G4StepLimiter(), particle);
+
+      if (AnaMan->GetStepFlag() > 0. )
+      {
+        ph->RegisterProcess(new G4StepLimiter(), particle);
+      }
+
     } else if (particle_name == "e+") {
       ph-> RegisterProcess(ep_msc, particle);
       ph-> RegisterProcess(new G4eIonisation,         particle);

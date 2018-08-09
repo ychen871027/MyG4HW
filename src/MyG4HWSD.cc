@@ -18,6 +18,10 @@ void MyG4HWSD::Initialize(G4HCofThisEvent*)
 {
   fsum_edep=0.;
   fno_step=0;
+  fno_trk=0;
+  fno_trkE=0.;
+  fno_stepn=0;
+  fno_stepL=0.;
   //fVoxelSumDep = new G4double[61*61*150*2];
   //for (G4int i=0; i<(61*61*150*2); ++i) fVoxelSumDep[i]=0.;
   for (G4int i=0; i<61; ++i)
@@ -50,7 +54,8 @@ G4bool MyG4HWSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   G4int    copyNo_z   = touchable->GetReplicaNumber(0);
   //G4int idx = copyNo_x + copyNo_y*61 +copyNo_z*61*61;
   //fVoxelSumDep[idx] += edep;
-  G4int idx = copyNo_z + copyNo_x*150 + copyNo_y*150*61;
+
+  //G4int idx = copyNo_z + copyNo_x*150 + copyNo_y*150*61;
   fVoxelSumDep[copyNo_x][copyNo_y][copyNo_z] += edep;
   fVoxelN[copyNo_x][copyNo_y][copyNo_z] += 1;
 
@@ -58,9 +63,28 @@ G4bool MyG4HWSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   //G4cout << " world(x,y,z)" << pos_world.x() << ", " << pos_world.y()
   //       <<", "<<pos_world.z()<< G4endl;
   auto AnaMan = MyG4HWAnalysis::Instance();
-  AnaMan-> FillNtuple( pos_world.x(),pos_world.y(),pos_world.z(),
-                      copyNo_x, copyNo_y, copyNo_z, edep,
-                      aStep->GetTrack()->GetParentID(), aStep->GetTrack()->GetTrackID());
+  if ( fabs(pos_world.z()) < 0.0001*mm && aStep->GetTrack()->GetParentID() == 0)
+  {
+    // std::cout << "testcheny:  " << pos_world.x() << "/"
+    //           << pos_world.y() << "/" << pos_world.z() << std::endl;
+    AnaMan-> Fill1DHist(3, pos_world.x(), 1.);
+    AnaMan-> Fill1DHist(4, pos_world.y(), 1.);
+
+  }
+  if ( pos_world.z() < 0.0001*mm && pos_world.z() > -100*cm ){
+    AnaMan-> Fill1DHist(5, pos_world.z(), 1.);
+    if(aStep->GetTrack()->GetParentID() != 0)
+    {
+      fno_trk++;
+      fno_trkE += edep;
+    }
+    if(aStep->GetTrack()->GetParentID() == 0)
+      fno_stepn++;
+      fno_stepL += aStep->GetStepLength();
+  }
+   AnaMan-> FillNtuple( pos_world.x(),pos_world.y(),pos_world.z(),
+                       copyNo_x, copyNo_y, copyNo_z, edep,
+                       aStep->GetTrack()->GetParentID(), aStep->GetTrack()->GetTrackID());
 
   return true;
 }
@@ -69,6 +93,9 @@ G4bool MyG4HWSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 void MyG4HWSD::EndOfEvent(G4HCofThisEvent*)
 {
   auto AnaMan = MyG4HWAnalysis::Instance();
+  AnaMan-> Fill1DHist(8, fno_trk, 1.);
+  AnaMan-> Fill1DHist(6, fno_trkE, 1.);
+  AnaMan-> Fill1DHist(7, fno_stepL/fno_stepn, 1.);
   G4int fNVoxelZ=150;
   G4int fNVoxelY=61;
   G4int fNVoxelX=61;
@@ -76,7 +103,7 @@ void MyG4HWSD::EndOfEvent(G4HCofThisEvent*)
   for( G4int iy=0; iy<fNVoxelY; iy++){
     for( G4int ix=0; ix<fNVoxelX; ix++){
       //G4int idx_id = ix + iy*fNVoxelX + iz*fNVoxelX*fNVoxelY;
-      G4int idx_id = iz + ix*fNVoxelZ + iy*fNVoxelX*fNVoxelZ;
+      //G4int idx_id = iz + ix*fNVoxelZ + iy*fNVoxelX*fNVoxelZ;
       AnaMan-> SetDosePerVoxel( ix, iy, iz, fVoxelSumDep[ix][iy][iz]/MeV);
       //if(fVoxelSumDep[idx_id]==0.)continue;
       if(fVoxelSumDep[ix][iy][iz]==0.)continue;

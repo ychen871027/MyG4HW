@@ -30,6 +30,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   auto AnaMan = MyG4HWAnalysis::Instance();
   //bool pencilBeam = false;
   bool pencilBeam = true;//false;
+  pencilBeam = ( (AnaMan-> GetBeamType() == "pencil")? true : false );
   if (pencilBeam == true) {
     particle = particleTable-> FindParticle( particleName="e-" );
     //particle = particleTable-> FindParticle( particleName="gamma" );
@@ -37,8 +38,11 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     ::particleGun -> SetParticleMomentumDirection(G4ThreeVector(0., 0., 1.));
     //::particleGun -> SetParticleEnergy( 6.*MeV );
     ::particleGun -> SetParticleEnergy( 20.*MeV );
+    //std::cout << " you are running " << particle->GetParticleName() << " "
+    //          << ::particleGun ->GetParticleEnergy() << " pencil beam " << std::endl;
 
   }else{
+    std::cout << "you are running broad beam " << std::endl;
     particle = particleTable-> FindParticle( particleName="gamma" );
     ::particleGun -> SetParticleDefinition( particle );
 
@@ -58,22 +62,22 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
     // 18 MV
     enum { kSize18 = 76 };
-    const double vec_rprob18[kSize18] = {
-      0.,
-      4.0337E-06, 9.5959E-06, 1.2065E-05, 1.3781E-05, 1.4319E-05, 1.4062E-05,
-      1.3924E-05, 1.3086E-05, 1.2041E-05, 1.1453E-05, 1.0889E-05, 1.0112E-05,
-      9.3359E-06, 8.7616E-06, 8.1366E-06, 7.6597E-06, 7.1010E-06, 6.7447E-06,
-      6.2360E-06, 5.8474E-06, 5.4393E-06, 5.2179E-06, 4.8653E-06, 4.6058E-06,
-      4.2906E-06, 4.0800E-06, 3.8501E-06, 3.6913E-06, 3.6273E-06, 3.2497E-06,
-      3.1424E-06, 2.8892E-06, 2.8118E-06, 2.6369E-06, 2.5523E-06, 2.3753E-06,
-      2.2205E-06, 2.1544E-06, 2.0812E-06, 2.0213E-06, 1.9223E-06, 1.7353E-06,
-      1.7610E-06, 1.6670E-06, 1.5800E-06, 1.4863E-06, 1.3896E-06, 1.4569E-06,
-      1.2893E-06, 1.2828E-06, 1.1637E-06, 1.0773E-06, 1.0395E-06, 1.0556E-06,
-      9.6263E-07, 9.1664E-07, 8.9720E-07, 8.7556E-07, 7.7567E-07, 7.4345E-07,
-      6.8121E-07, 6.3706E-07, 5.4163E-07, 5.6762E-07, 4.8476E-07, 4.3953E-07,
-      4.0895E-07, 3.2791E-07, 2.8358E-07, 2.1152E-07, 1.3752E-07, 6.5072E-08,
-      1.3752E-07, 6.5072E-08, 6.5072E-13
-    };
+    // const double vec_rprob18[kSize18] = {
+    //   0.,
+    //   4.0337E-06, 9.5959E-06, 1.2065E-05, 1.3781E-05, 1.4319E-05, 1.4062E-05,
+    //   1.3924E-05, 1.3086E-05, 1.2041E-05, 1.1453E-05, 1.0889E-05, 1.0112E-05,
+    //   9.3359E-06, 8.7616E-06, 8.1366E-06, 7.6597E-06, 7.1010E-06, 6.7447E-06,
+    //   6.2360E-06, 5.8474E-06, 5.4393E-06, 5.2179E-06, 4.8653E-06, 4.6058E-06,
+    //   4.2906E-06, 4.0800E-06, 3.8501E-06, 3.6913E-06, 3.6273E-06, 3.2497E-06,
+    //   3.1424E-06, 2.8892E-06, 2.8118E-06, 2.6369E-06, 2.5523E-06, 2.3753E-06,
+    //   2.2205E-06, 2.1544E-06, 2.0812E-06, 2.0213E-06, 1.9223E-06, 1.7353E-06,
+    //   1.7610E-06, 1.6670E-06, 1.5800E-06, 1.4863E-06, 1.3896E-06, 1.4569E-06,
+    //   1.2893E-06, 1.2828E-06, 1.1637E-06, 1.0773E-06, 1.0395E-06, 1.0556E-06,
+    //   9.6263E-07, 9.1664E-07, 8.9720E-07, 8.7556E-07, 7.7567E-07, 7.4345E-07,
+    //   6.8121E-07, 6.3706E-07, 5.4163E-07, 5.6762E-07, 4.8476E-07, 4.3953E-07,
+    //   4.0895E-07, 3.2791E-07, 2.8358E-07, 2.1152E-07, 1.3752E-07, 6.5072E-08,
+    //   1.3752E-07, 6.5072E-08, 6.5072E-13
+    // };
 
     const double fSSD = 100.*cm;
     const double fieldX = 10.*cm;
@@ -108,6 +112,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
     //std::cout << "generating the energy starting "<< x << "/" << y <<
     //          "/" << z << "/" << xmax << "/" << ymax << std::endl;
+
     double deK = 0.;
     int iEbin = 0;
     double sumkEbin = 0.;
@@ -120,7 +125,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
       double sumEbin1 = 0.;
       for(int ii=0; ii < iEbin; ii++) sumEbin1 += kEbin * vec_rprob6[ii] / sumkEbin;
-      double sumEbin2 = sumEbin1 + kEbin * vec_rprob6[iEbin+1] / sumkEbin;
+      //double sumEbin2 = sumEbin1 + kEbin * vec_rprob6[iEbin+1] / sumkEbin;
       double kBin = 0.;
       kBin = sumEbin1 + 0.5 * spoint * (vec_rprob6[iEbin] + sppro) / sumkEbin;
 
@@ -131,13 +136,18 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         break;
       }
     }
+
     AnaMan-> Fill1DHist(1, deK, 1);
+
     //if (iEbin==1)
     //if( deK < 250.*keV )
     //std::cout << "generating the energy: " << deK << "iEbin" << iEbin << std::endl;
-    ::particleGun -> SetParticleMomentumDirection(G4ThreeVector(x, y, z));
     //::particleGun ->SetParticleEnergy( 6.*MeV );
+    ::particleGun -> SetParticleMomentumDirection(G4ThreeVector(x, y, z));
     ::particleGun ->SetParticleEnergy( deK );
+
+    std::cout << " you are running " << particle->GetParticleName() << " "
+              << ::particleGun ->GetParticleEnergy() << " pencil beam " << std::endl;
   }
 
   ::particleGun ->SetParticlePosition( G4ThreeVector(0.*cm,0.*cm,-100.*cm) );
