@@ -33,6 +33,8 @@
 #include "physicslist_cug4.h"
 //#include "config.h"
 #include "MyG4HWAnalysis.hh"
+#include "G4GoudsmitSaundersonMscModel.hh"
+#include "G4WentzelVIModel.hh"
 
 namespace cug4 {
 
@@ -74,16 +76,20 @@ void PhysicsListCuG4::ConstructProcess()
 
   // multiple scattering for e-
   G4eMultipleScattering *em_msc = new G4eMultipleScattering();
-  em_msc->SetStepLimitType(fMinimal);
+  //em_msc->SetStepLimitType(fMinimal);
 
   // multiple scattering for e+
   G4eMultipleScattering *ep_msc = new G4eMultipleScattering();
   ep_msc->SetStepLimitType(fMinimal);
 
+  em_msc->SetStepLimitType(fUseSafetyPlus);
+  //em_msc->SetRangeFactor(0.2);
+  //em_msc->SetSkin(3);
+
   // multiple scattering for protons
   // G4hMultipleScattering *p_msc = new G4hMultipleScattering();
   // p_msc->SetStepLimitType(fMinimal);
-
+  G4double highEnergyLimit = 100*MeV;
   while( (*theParticleIterator)() ){
     G4ParticleDefinition* particle = theParticleIterator-> value();
     G4String particle_name = particle-> GetParticleName();
@@ -92,9 +98,15 @@ void PhysicsListCuG4::ConstructProcess()
       ph-> RegisterProcess(new G4ComptonScattering,   particle);
       ph-> RegisterProcess(new G4GammaConversion,     particle);
     } else if (particle_name == "e-") {
+      // G4GoudsmitSaundersonMscModel* msc1 = new G4GoudsmitSaundersonMscModel();
+      // G4WentzelVIModel* msc2 = new G4WentzelVIModel();
+      // msc1->SetHighEnergyLimit(highEnergyLimit);
+      // msc2->SetLowEnergyLimit(highEnergyLimit);
+      // em_msc->SetEmModel(msc1);
+      // em_msc->SetEmModel(msc2);
       ph-> RegisterProcess(em_msc, particle);
       ph-> RegisterProcess(new G4eIonisation,         particle);
-      ph-> RegisterProcess(new G4eBremsstrahlung,     particle);
+      // ph-> RegisterProcess(new G4eBremsstrahlung,     particle);
 
       if (AnaMan->GetStepFlag() > 0. )
       {

@@ -82,9 +82,9 @@ G4bool MyG4HWSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
       fno_stepn++;
       fno_stepL += aStep->GetStepLength();
   }
-   AnaMan-> FillNtuple( pos_world.x(),pos_world.y(),pos_world.z(),
-                       copyNo_x, copyNo_y, copyNo_z, edep,
-                       aStep->GetTrack()->GetParentID(), aStep->GetTrack()->GetTrackID());
+   // AnaMan-> FillNtuple( pos_world.x(),pos_world.y(),pos_world.z(),
+   //                     copyNo_x, copyNo_y, copyNo_z, edep,
+   //                     aStep->GetTrack()->GetParentID(), aStep->GetTrack()->GetTrackID());
 
   return true;
 }
