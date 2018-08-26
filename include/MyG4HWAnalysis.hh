@@ -1,6 +1,7 @@
 #ifndef MYG4HW_ANALYSIS_H_
 #define MYG4HW_ANALYSIS_H_
 
+#include "G4MscStepLimitType.hh"
 class TFile;
 class TTree;
 class TH1D;
@@ -35,6 +36,8 @@ public:
   G4double GetCutValue();
   void SetStepFlag(G4double val);
   G4double GetStepFlag();
+  void SetMSCStepAlg(G4String val);
+  G4MscStepLimitType GetMSCStepAlg();
 
   int GetNoVoxelX();
   int GetNoVoxelY();
@@ -82,6 +85,7 @@ private:
   G4double fcutvalue;
   G4String fbeam;
   G4String fmat;
+  G4String fmscstepalg;
 
 };
 
@@ -94,6 +98,28 @@ inline G4double MyG4HWAnalysis::GetStepFlag()
 {
   return fstepflag;
 }
+
+inline void MyG4HWAnalysis::SetMSCStepAlg(G4String val)
+{
+  fmscstepalg=val;
+}
+
+inline G4MscStepLimitType MyG4HWAnalysis::GetMSCStepAlg()
+{
+  if(strcmp(fmscstepalg, "fMinimal")==0){
+    return fMinimal;
+  } else if (strcmp(fmscstepalg, "fUseSafety")==0) {
+    return fUseSafety;
+  } else if (strcmp(fmscstepalg, "fUseSafetyPlus")==0) {
+    return fUseSafetyPlus;
+  } else if (strcmp(fmscstepalg, "fUseDistanceToBoundary")==0) {
+    return fUseDistanceToBoundary;
+  } else{
+    std::cout << "you don't select MSC step alg, will use fMinimal" << std::endl;
+    return fMinimal;
+  } 
+}
+
 
 inline void MyG4HWAnalysis::SetCutValue(G4double val)
 {

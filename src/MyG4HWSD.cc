@@ -62,6 +62,8 @@ G4bool MyG4HWSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   G4ThreeVector pos_world = preStepPoint->GetPosition();
   //G4cout << " world(x,y,z)" << pos_world.x() << ", " << pos_world.y()
   //       <<", "<<pos_world.z()<< G4endl;
+  
+  /*
   auto AnaMan = MyG4HWAnalysis::Instance();
   if ( fabs(pos_world.z()) < 0.0001*mm && aStep->GetTrack()->GetParentID() == 0)
   {
@@ -72,20 +74,23 @@ G4bool MyG4HWSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
   }
   if ( pos_world.z() < 0.0001*mm && pos_world.z() > -100*cm ){
-    AnaMan-> Fill1DHist(5, pos_world.z(), 1.);
+    //AnaMan-> Fill1DHist(5, pos_world.z(), 1.);
     if(aStep->GetTrack()->GetParentID() != 0)
     {
       fno_trk++;
       fno_trkE += edep;
     }
-    if(aStep->GetTrack()->GetParentID() == 0)
+    if(aStep->GetTrack()->GetParentID() == 0){
       fno_stepn++;
       fno_stepL += aStep->GetStepLength();
+      AnaMan-> Fill1DHist(5, aStep-> GetStepLength()/mm, 1.);
+      AnaMan-> Fill1DHist(7, aStep-> GetTrack()->GetTrackLength()/mm, 1.);
+    }
   }
    // AnaMan-> FillNtuple( pos_world.x(),pos_world.y(),pos_world.z(),
    //                     copyNo_x, copyNo_y, copyNo_z, edep,
    //                     aStep->GetTrack()->GetParentID(), aStep->GetTrack()->GetTrackID());
-
+  */
   return true;
 }
 
@@ -93,9 +98,12 @@ G4bool MyG4HWSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 void MyG4HWSD::EndOfEvent(G4HCofThisEvent*)
 {
   auto AnaMan = MyG4HWAnalysis::Instance();
+  /*
   AnaMan-> Fill1DHist(8, fno_trk, 1.);
   AnaMan-> Fill1DHist(6, fno_trkE, 1.);
-  AnaMan-> Fill1DHist(7, fno_stepL/fno_stepn, 1.);
+  */
+
+  //AnaMan-> Fill1DHist(7, fno_stepL/fno_stepn, 1.);
   G4int fNVoxelZ=150;
   G4int fNVoxelY=61;
   G4int fNVoxelX=61;

@@ -82,9 +82,14 @@ void PhysicsListCuG4::ConstructProcess()
   G4eMultipleScattering *ep_msc = new G4eMultipleScattering();
   ep_msc->SetStepLimitType(fMinimal);
 
-  em_msc->SetStepLimitType(fUseSafetyPlus);
-  //em_msc->SetRangeFactor(0.2);
-  //em_msc->SetSkin(3);
+  em_msc->SetStepLimitType( AnaMan-> GetMSCStepAlg() );
+  std::cout << "testcheny " <<  AnaMan-> GetMSCStepAlg() << std::endl;
+  //em_msc->SetStepLimitType(fMinimal);
+  //em_msc->SetStepLimitType(fUseSafety);
+  //em_msc->SetStepLimitType(fUseSafetyPlus);
+  //em_msc->SetStepLimitType(fUseDistanceToBoundary);
+  //em_msc->SetRangeFactor(0.0002);
+  //em_msc->SetSkin(2000000);
 
   // multiple scattering for protons
   // G4hMultipleScattering *p_msc = new G4hMultipleScattering();
@@ -98,14 +103,14 @@ void PhysicsListCuG4::ConstructProcess()
       ph-> RegisterProcess(new G4ComptonScattering,   particle);
       ph-> RegisterProcess(new G4GammaConversion,     particle);
     } else if (particle_name == "e-") {
-      // G4GoudsmitSaundersonMscModel* msc1 = new G4GoudsmitSaundersonMscModel();
+      //G4GoudsmitSaundersonMscModel* msc1 = new G4GoudsmitSaundersonMscModel();
       // G4WentzelVIModel* msc2 = new G4WentzelVIModel();
       // msc1->SetHighEnergyLimit(highEnergyLimit);
       // msc2->SetLowEnergyLimit(highEnergyLimit);
-      // em_msc->SetEmModel(msc1);
+      //em_msc->SetEmModel(msc1);
       // em_msc->SetEmModel(msc2);
       ph-> RegisterProcess(em_msc, particle);
-      ph-> RegisterProcess(new G4eIonisation,         particle);
+      //ph-> RegisterProcess(new G4eIonisation,         particle);
       // ph-> RegisterProcess(new G4eBremsstrahlung,     particle);
 
       if (AnaMan->GetStepFlag() > 0. )

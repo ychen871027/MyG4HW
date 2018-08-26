@@ -63,7 +63,8 @@ int main( int argc, char** argv)
   AnaMan-> SetMatType(argv[5]);
   AnaMan-> SetStepFlag(atof(argv[6]));
   AnaMan-> SetCutValue(atof(argv[7]));
-  std::cout << "running " << argv[4] << " material: " << argv[5] << std::endl;
+  AnaMan-> SetMSCStepAlg(argv[8]);
+  std::cout << "running " << argv[4] << " material: " << argv[5] << "mscstepalg: " << argv[8] << std::endl;
 
   //G4VModularPhysicsList* phys = new QGSP_BIC();
   //phys->SetDefaultCutValue( 1.*CLHEP::mm );
