@@ -44,6 +44,8 @@ G4VPhysicalVolume* MyG4HWDetectorConstruction::Construct()
   } else if ( AnaMan-> GetMatType() == "vg4water" )
   {
     G4cout << "running from NIST G4Water" << std::endl;
+    //G4water      = nist->FindOrBuildMaterial("G4_Fe");
+    //G4water      = nist->FindOrBuildMaterial("G4_AIR");
     G4water      = nist->FindOrBuildMaterial("G4_WATER");
     G4Material* G4air_normal = nist->FindOrBuildMaterial("G4_AIR");
     G4double air_density =  G4air_normal->GetDensity();

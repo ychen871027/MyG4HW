@@ -71,6 +71,7 @@ void PhysicsListCuG4::ConstructProcess()
 
   G4PhysicsListHelper* ph = G4PhysicsListHelper::GetPhysicsListHelper();
   assert( ph != NULL );
+
   auto theParticleIterator=GetParticleIterator();
   theParticleIterator-> reset();
 
@@ -105,10 +106,12 @@ void PhysicsListCuG4::ConstructProcess()
     } else if (particle_name == "e-") {
       //G4GoudsmitSaundersonMscModel* msc1 = new G4GoudsmitSaundersonMscModel();
       // G4WentzelVIModel* msc2 = new G4WentzelVIModel();
-      // msc1->SetHighEnergyLimit(highEnergyLimit);
+      //msc1->SetHighEnergyLimit(highEnergyLimit);
       // msc2->SetLowEnergyLimit(highEnergyLimit);
       //em_msc->SetEmModel(msc1);
       // em_msc->SetEmModel(msc2);
+      
+      
       ph-> RegisterProcess(em_msc, particle);
       //ph-> RegisterProcess(new G4eIonisation,         particle);
       // ph-> RegisterProcess(new G4eBremsstrahlung,     particle);

@@ -62,7 +62,7 @@ G4bool MyG4HWSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   G4ThreeVector pos_world = preStepPoint->GetPosition();
   //G4cout << " world(x,y,z)" << pos_world.x() << ", " << pos_world.y()
   //       <<", "<<pos_world.z()<< G4endl;
-  
+
   /*
   auto AnaMan = MyG4HWAnalysis::Instance();
   if ( fabs(pos_world.z()) < 0.0001*mm && aStep->GetTrack()->GetParentID() == 0)
