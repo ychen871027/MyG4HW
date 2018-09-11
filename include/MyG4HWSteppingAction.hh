@@ -3,15 +3,18 @@
 
 #include "G4UserSteppingAction.hh"
 
+class MyG4HWEventAction;
+
 class MyG4HWSteppingAction : public G4UserSteppingAction
 {
   public:
-    MyG4HWSteppingAction();
+    MyG4HWSteppingAction(MyG4HWEventAction* );
     virtual ~MyG4HWSteppingAction();
 
     virtual void UserSteppingAction( const G4Step* );
   
-  //private:
+  private:
+    MyG4HWEventAction* fEvent;
 };
 
 #endif

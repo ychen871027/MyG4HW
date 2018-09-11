@@ -13,6 +13,20 @@ public:
 
   virtual void BeginOfEventAction(const G4Event*);
   virtual void EndOfEventAction(const G4Event* anEvent);
+  void CountNumOfTrack();
+  double CountEdepOfTrack(double edep);
+private:
+  int fNtrk;
+  double fTotEdep;
+
 };
 
+inline void MyG4HWEventAction::CountNumOfTrack()
+{
+  fNtrk++;
+}
+inline double MyG4HWEventAction::CountEdepOfTrack(double edep)
+{
+  fTotEdep = fTotEdep + edep;
+}
 #endif

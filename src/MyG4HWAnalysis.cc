@@ -66,9 +66,11 @@ void MyG4HWAnalysis::BookTreeAndHist()
   fHist[3] = new TH1D("sxdep", "sxdep", 600, -300.*CLHEP::mm/CLHEP::mm, 300.*CLHEP::mm/CLHEP::mm);
   fHist[4] = new TH1D("sydep", "sydep", 600, -300.*CLHEP::mm/CLHEP::mm, 300.*CLHEP::mm/CLHEP::mm);
   fHist[5] = new TH1D("szdep", "szdep", 1500, 0., 1500.*CLHEP::mm/CLHEP::mm);
-  fHist[6] = new TH1D("szdepe", "szdepe", 2000, 0., 20.*CLHEP::MeV/CLHEP::MeV);
+  fHist[6] = new TH1D("szdepe", "szdepe", 500, 0., 5.*CLHEP::MeV/CLHEP::MeV);
   fHist[7] = new TH1D("trklength", "trklength", 1500, 0., 1500.*CLHEP::mm/CLHEP::mm);
   fHist[8] = new TH1D("trkNum", "trkNum", 100, 0., 100.);
+  fHist[9] = new TH1D("salldepe", "salldepe", 500, 0., 5.*CLHEP::MeV/CLHEP::MeV);
+  fHist[10] = new TH1D("dedxE", "dedxE", 50, 0., 5.*CLHEP::MeV/CLHEP::MeV);
 
   for (G4int i=0; i<61; ++i)
   {

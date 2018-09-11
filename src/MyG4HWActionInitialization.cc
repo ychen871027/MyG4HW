@@ -17,6 +17,7 @@ void MyG4HWActionInitialization::Build() const
 {
   SetUserAction(new MyG4HWPrimaryGeneratorAction);
   SetUserAction(new MyG4HWRunAction);
-  SetUserAction(new MyG4HWEventAction);
-  SetUserAction(new MyG4HWSteppingAction);
+  MyG4HWEventAction* event =  new MyG4HWEventAction();
+  SetUserAction( event );
+  SetUserAction(new MyG4HWSteppingAction(event) );
 }

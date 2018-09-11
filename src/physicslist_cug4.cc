@@ -112,8 +112,8 @@ void PhysicsListCuG4::ConstructProcess()
       // em_msc->SetEmModel(msc2);
       
       
-      ph-> RegisterProcess(em_msc, particle);
-      //ph-> RegisterProcess(new G4eIonisation,         particle);
+      //ph-> RegisterProcess(em_msc, particle);
+      ph-> RegisterProcess(new G4eIonisation,         particle);
       // ph-> RegisterProcess(new G4eBremsstrahlung,     particle);
 
       if (AnaMan->GetStepFlag() > 0. )

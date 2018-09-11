@@ -2,8 +2,11 @@
 #include "G4SteppingManager.hh"
 #include "MyG4HWSteppingAction.hh"
 #include "MyG4HWAnalysis.hh"
+#include "MyG4HWEventAction.hh"
 
-MyG4HWSteppingAction::MyG4HWSteppingAction()
+MyG4HWSteppingAction::MyG4HWSteppingAction(MyG4HWEventAction* event)
+:G4UserSteppingAction(),
+  fEvent(event)
 {
 }
 
@@ -14,7 +17,7 @@ MyG4HWSteppingAction:: ~MyG4HWSteppingAction()
 void MyG4HWSteppingAction::UserSteppingAction( const G4Step* aStep )
 {
   //std::cout << "running:: " << __FILE__ << std::endl;
-  if (aStep->GetTrack()->GetPosition().z()>0) aStep->GetTrack()->SetTrackStatus(fStopAndKill);
+  if (aStep->GetTrack()->GetPosition().z()>=0) aStep->GetTrack()->SetTrackStatus(fStopAndKill);
 
   G4double edep = aStep-> GetTotalEnergyDeposit();
   G4String particleName = aStep-> GetTrack()-> GetDefinition()
@@ -35,6 +38,7 @@ void MyG4HWSteppingAction::UserSteppingAction( const G4Step* aStep )
   //std::cout << "track position(x,y,z) " << aStep->GetTrack()->GetPosition().x() << "/" << aStep->GetTrack()->GetPosition().y() << "/" << aStep->GetTrack()->GetPosition().z() << std::endl;
   if ( fabs(aStep->GetTrack()->GetPosition().z()) < 0.000001*mm && aStep->GetTrack()->GetParentID() == 0)
   {
+    //fEvent->CountNumOfTrack();
     // if (fabs(pos_world.x()) > 0.0){
     //   std::cout << aStep->GetDeltaPosition().x()/mm << "/"
     //             << aStep->GetDeltaPosition().y()/mm << "/"
@@ -50,6 +54,8 @@ void MyG4HWSteppingAction::UserSteppingAction( const G4Step* aStep )
     // }
     AnaMan-> Fill1DHist(3, pos_world.x(), 1.);
     AnaMan-> Fill1DHist(4, pos_world.y(), 1.);
+    AnaMan-> Fill1DHist(10, 20*MeV-aStep->GetTrack()->GetKineticEnergy()/MeV,1.);
+    //std::cout << "dedx: " << 20*MeV-aStep->GetTrack()->GetKineticEnergy()/MeV << std::endl;
   }
 
   if ( pos_world.z() < 0.*mm && pos_world.z() >= -100*cm ){
@@ -66,6 +72,9 @@ void MyG4HWSteppingAction::UserSteppingAction( const G4Step* aStep )
       AnaMan-> Fill1DHist(7, aStep-> GetTrack()->GetTrackLength()/mm, 1.);
     }else{
       AnaMan-> Fill1DHist(6, aStep-> GetTotalEnergyDeposit()/MeV, 1.);
+      //std::cout << aStep-> GetTotalEnergyDeposit()/MeV << std::endl;
+      fEvent->CountNumOfTrack();
+      fEvent->CountEdepOfTrack(aStep-> GetTotalEnergyDeposit());
     }
   }
 

@@ -66,6 +66,9 @@ G4VPhysicalVolume* MyG4HWDetectorConstruction::Construct()
     G4air = new G4Material( "airWwater", air_density, 2 );
     G4air->AddElement(elH,0.112);
     G4air->AddElement(elO,0.888);
+    
+    //water_density=1.85*g/cm3;//bone
+    //water_density=0.26*g/cm3;//lung
 
     G4water = new G4Material( "water", water_density, 2 );
     G4water->AddElement(elH,0.112);
