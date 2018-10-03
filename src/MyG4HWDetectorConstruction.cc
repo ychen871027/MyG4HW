@@ -19,6 +19,7 @@ MyG4HWDetectorConstruction::MyG4HWDetectorConstruction()
   : G4VUserDetectorConstruction(),
     fNVoxelX{0}, fNVoxelY(0), fNVoxelZ(0)
 {
+  std::cout << "running MyG4HWDetectorConstruction..." << std::endl;
 }
 
 MyG4HWDetectorConstruction::~MyG4HWDetectorConstruction()
@@ -29,56 +30,89 @@ G4VPhysicalVolume* MyG4HWDetectorConstruction::Construct()
 {
 
   auto AnaMan = MyG4HWAnalysis::Instance();
+  fNVoxelX = AnaMan-> GetNoVoxelX();
+  fNVoxelY = AnaMan-> GetNoVoxelY();
+  fNVoxelZ = AnaMan-> GetNoVoxelZ();
+  fVoxelXHalfOfX = AnaMan-> GetVoxelX();
+  fVoxelXHalfOfY = AnaMan-> GetVoxelY();
+  fVoxelXHalfOfZ = AnaMan-> GetVoxelZ();
 
   G4Material* G4air   = nullptr;
   G4Material* G4water = nullptr;
 
+  G4Material* water = nullptr;
+  G4Material* bone  = nullptr;
+  G4Material* lung  = nullptr;
+
   G4NistManager* nist = G4NistManager::Instance();
 
-  if ( AnaMan-> GetMatType() == "g4air" )
-  {
-    G4cout << "running from NIST" << std::endl;
+  if (AnaMan-> GetMatType() == "g4air") {
     G4water = nist->FindOrBuildMaterial("G4_WATER");
     G4air   = nist->FindOrBuildMaterial("G4_AIR");
 
-  } else if ( AnaMan-> GetMatType() == "vg4water" )
-  {
-    G4cout << "running from NIST G4Water" << std::endl;
-    //G4water      = nist->FindOrBuildMaterial("G4_Fe");
-    //G4water      = nist->FindOrBuildMaterial("G4_AIR");
-    G4water      = nist->FindOrBuildMaterial("G4_WATER");
-    G4Material* G4air_normal = nist->FindOrBuildMaterial("G4_AIR");
-    G4double air_density =  G4air_normal->GetDensity();
+    water = nist->BuildMaterialWithNewDensity(      "G4waterWG4water",
+                                                           "G4_WATER",
+                                              G4water-> GetDensity());
+    bone  = nist->BuildMaterialWithNewDensity(        "G4waterWbone",
+                                                          "G4_WATER",
+                                                        1.85*g/cm3 );
+    lung  = nist->BuildMaterialWithNewDensity(        "G4waterWlung",
+                                                          "G4_WATER",
+                                                         0.26*g/cm3);
 
-    G4air    = nist-> BuildMaterialWithNewDensity(
-                                                  "G4_waterWairp",
-                                                       "G4_WATER",
-                                                     air_density);
-  } else if ( AnaMan-> GetMatType() == "eleWater" )
-  {
-    G4cout << "running from elemnt Water" << std::endl;
+  } else if (AnaMan-> GetMatType() == "vg4water") {
+    G4cout << "running from NIST G4WATER" << std::endl;
+    G4water = nist->FindOrBuildMaterial("G4_WATER");
     G4Material* G4air_normal = nist->FindOrBuildMaterial("G4_AIR");
+
+    G4air = nist->BuildMaterialWithNewDensity(             "G4airWG4water",
+                                                                "G4_WATER",
+                                              G4air_normal-> GetDensity());
+
+    water = nist->BuildMaterialWithNewDensity(      "G4waterWG4water",
+                                                           "G4_WATER",
+                                              G4water-> GetDensity());
+
+    bone  = nist->BuildMaterialWithNewDensity(        "G4waterWbone",
+                                                          "G4_WATER",
+                                                      1.85 * g/cm3 );
+
+    lung  = nist->BuildMaterialWithNewDensity(        "G4waterWlung",
+                                                          "G4_WATER",
+                                                       0.26 * g/cm3);
+                                                //G4air->GetDensity());
+
+  } else if (AnaMan-> GetMatType() == "elewater") {
+    G4cout << "running from element Water" << std::endl;
+    G4Material* G4air_normal   = nist->FindOrBuildMaterial("G4_AIR");
     G4Material* G4water_normal = nist->FindOrBuildMaterial("G4_WATER");
     G4double water_density =  G4water_normal->GetDensity();
-    G4double air_density =  G4air_normal->GetDensity();
-    G4Element* elH = new G4Element( "Hydrogen", "H", 1.0, 1.008  * g/mole );
-    G4Element* elO = new G4Element( "Oxygen", "O", 8.0, 16.00  * g/mole );
-    G4air = new G4Material( "airWwater", air_density, 2 );
+    G4Element* elH = new G4Element("Hydrogen", "H", 1.0, 1.008 * g/mole);
+    G4Element* elO = new G4Element("Oxygen", "O", 8.0, 16.00 * g/mole);
+
+    G4air = new G4Material("air", G4air_normal->GetDensity(), 2);
     G4air->AddElement(elH,0.112);
     G4air->AddElement(elO,0.888);
-    
-    //water_density=1.85*g/cm3;//bone
-    //water_density=0.26*g/cm3;//lung
 
-    G4water = new G4Material( "water", water_density, 2 );
+    //water_density=0.26*g/cm3;//lung
+    //water_density=1.85*g/cm3;//bone
+    G4water = new G4Material("water", water_density, 2);
     G4water->AddElement(elH,0.112);
     G4water->AddElement(elO,0.888);
-  }
 
-  std::cout << "current air: density: " << G4air-> GetDensity() << " state: "
-            << G4air-> GetState() << " temperature: " << G4air-> GetTemperature()
-            << " pressure: " << G4air-> GetPressure() << " formula:"
-            << G4air-> GetChemicalFormula() << std::endl;
+    water = new G4Material("waterWG4water", water_density, 2);
+    water->AddElement(elH,0.112);
+    water->AddElement(elO,0.888);
+    bone = new G4Material( "waterWbone", 1.85*g/cm3, 2 );
+    bone-> AddElement(elH,0.112);
+    bone-> AddElement(elO,0.888);
+    lung = new G4Material( "waterWlung", 0.26*g/cm3, 2 );
+    lung-> AddElement(elH,0.112);
+    lung-> AddElement(elO,0.888);
+
+  }else{
+    std::cout << "!!!Please configure your detector materials!!!" << std::endl;
+  }
 
   const G4double world_x = 300*mm;
   const G4double world_y = 300*mm;
@@ -146,8 +180,52 @@ G4VPhysicalVolume* MyG4HWDetectorConstruction::Construct()
 
   G4ThreeVector voxelSize(fVoxelXHalfOfX, fVoxelXHalfOfY, fVoxelXHalfOfZ);
 
+  fMaterials.clear();
+  if (AnaMan->GetExDensity()) {
+    std::cout << " importing the density from : " << AnaMan-> GetNameOfDenFile() << std::endl;
+    std::ifstream findensity( AnaMan->GetNameOfDenFile() );
+    for ( int iz=0; iz<fNVoxelZ; iz++) {
+      for ( int iy=0; iy<fNVoxelY; iy++) {
+        for ( int ix=0; ix<fNVoxelX; ix++) {
+          int idx_id =  ix + iy*fNVoxelX + iz*fNVoxelX*fNVoxelY;
+          int ixx;
+          int iyy;
+          int izz;
+          double idensity;
+          findensity >> ixx >> iyy >> izz >> idensity;
+          G4String voxelMatname = "G4waterWdensity"+std::to_string(idx_id);
+
+          //G4Material* voxel_density = nist->BuildMaterialWithNewDensity( voxelMatname,
+          //                                                                      "G4_WATER",
+          //                                                             idensity * (g/cm3));
+       	  fMaterials.push_back(water);
+       	  //fMaterials.push_back(voxel_density);
+        }
+      }
+    }
+  } else {
+    for ( int iz=0; iz<fNVoxelZ; iz++) {
+      for ( int iy=0; iy<fNVoxelY; iy++) {
+        for ( int ix=0; ix<fNVoxelX; ix++) {
+      	  //int idx_id =  ix + iy*fNVoxelX + iz*fNVoxelX*fNVoxelY;
+      	  if (iz > 26 && iz <= 51) {
+            if (AnaMan-> GetMidMat() == "bone") {
+	      fMaterials.push_back(bone);
+	    } else if (AnaMan-> GetMidMat() == "lung") {
+	      fMaterials.push_back(lung);
+	    } else {
+      	      fMaterials.push_back(water);
+	    }
+	  } else {
+      	    fMaterials.push_back(water);
+	  }
+        }
+      }
+    }
+  }
+
   MyG4HWPhantomParameterisation* param
-    = new MyG4HWPhantomParameterisation(voxelSize);
+    = new MyG4HWPhantomParameterisation(voxelSize, fMaterials);
   param->SetNoVoxel( fNVoxelX, fNVoxelY, fNVoxelZ );
 
   new G4PVParameterised("phatom",

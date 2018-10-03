@@ -3,16 +3,18 @@
 
 #include "G4ThreeVector.hh"
 #include "G4VNestedParameterisation.hh"
-
+//class G4VisAttributes;
+//class G4VPhysicalVolume;
+//class G4VTouchable;
 
 class MyG4HWPhantomParameterisation : public G4VNestedParameterisation
 {
 public:
-  MyG4HWPhantomParameterisation(const G4ThreeVector& voxelSize);
+  MyG4HWPhantomParameterisation(const G4ThreeVector& voxelSize, std::vector<G4Material*>& mat);
   virtual ~MyG4HWPhantomParameterisation();
 
-  virtual G4Material* ComputeMaterial(G4VPhysicalVolume* , const G4int iz,
-                                      const G4VTouchable* parentTouch);
+  virtual G4Material* ComputeMaterial(G4VPhysicalVolume* , const G4int ,
+                                      const G4VTouchable* );
 
   void SetNoVoxel(G4int nx, G4int ny, G4int nz);
   virtual G4int GetNumberOfMaterials()const;
@@ -29,6 +31,7 @@ private:
   G4double fdX;
   G4double fdY;
   G4double fdZ;
+  std::vector<G4Material*> fMaterials;
 
 };
 

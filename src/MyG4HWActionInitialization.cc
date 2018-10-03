@@ -1,6 +1,6 @@
+#include "MyG4HWEventAction.hh"
 #include "MyG4HWPrimaryGeneratorAction.hh"
 #include "MyG4HWRunAction.hh"
-#include "MyG4HWEventAction.hh"
 #include "MyG4HWSteppingAction.hh"
 #include "MyG4HWActionInitialization.hh"
 

@@ -1,5 +1,5 @@
-#ifndef MYG4HW_DETECTOR_CONSTRUCTION_H_
-#define MYG4HW_DETECTOR_CONSTRUCTION_H_
+#ifndef MYG4HW_DETECTOR_CONSTRUCTION2_H_
+#define MYG4HW_DETECTOR_CONSTRUCTION2_H_
 
 #include "G4VUserDetectorConstruction.hh"
 
@@ -23,7 +23,7 @@ protected:
   G4double fVoxelXHalfOfX;
   G4double fVoxelXHalfOfY;
   G4double fVoxelXHalfOfZ;
-
+  std::vector<G4Material*> fMaterials;
 };
 
 inline void MyG4HWDetectorConstruction::SetNoVoxelX(G4int val) {fNVoxelX=val;}

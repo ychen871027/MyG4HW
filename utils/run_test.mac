@@ -1,0 +1,54 @@
+# Ye.Chen
+#
+# Homework marco
+#
+
+#########################
+# Set of the verboses
+#
+/control/verbose 2
+/tracking/verbose 2
+/run/verbose 2
+/event/verbose 2
+/process/em/verbose 2
+/material/nist/listMaterials simple
+/material/g4/printMaterial G4_WATER
+/material/g4/printMaterial airWater
+/material/g4/printMaterial airtowaterwithairp
+
+/process/eLoss/fluct true
+#/process/eLoss/fluct false
+##########################
+# Random
+#
+
+#/random/setDirectoryName .
+#/random/setSavingFlag 1
+
+
+##########################
+# Initialisation procedure
+#
+#/geometry/textInput/verbose 3
+
+/run/initialize
+#/gps/pos/type Point
+#/gps/pos/shape Circle
+#/gps/pos/centre 0. 0. -100. cm
+#/gps/pos/radius 10. cm
+#/gps/pos/type Beam
+#/gps/pos/sigma_x 0.2 mm
+#/gps/pos/sigma_y 0.2 mm
+#/gps/particle e-
+#/gps/energy 20. MeV
+#/gps/ang/type beam2d
+#/gps/ang/sigma_x 0.1 mrad
+#/gps/ang/sigma_y 0.1 mrad
+#/gps/direction 0 0 1
+/run/beamOn 1
+
+#/run/beamOn 100
+#/run/beamOn 100
+#/run/beamOn 20000
+#/run/beamOn 100000
+#100000000

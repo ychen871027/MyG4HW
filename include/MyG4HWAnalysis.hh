@@ -14,6 +14,17 @@ public:
   ~MyG4HWAnalysis();
   static MyG4HWAnalysis* Instance();
 
+  void SetVerbose(bool val);
+  bool GetVerbose();
+  void SetOutPutPrefix(G4String val);
+  G4String GetOutPutPrefix();
+  void SetConfVoxel(G4String voxelconfig);
+  G4String GetVoxelMatType();
+  G4String GetPLname();
+  G4String MakeDetailTrackINFO();
+  bool GetExDensity();
+  void SetDensityFlag(bool val);
+  G4String GetNameOfDenFile();
   void SetSeedNum(G4int idxN);
   int GetSeedNum();
   void SetTotNum(int ntot);
@@ -21,6 +32,8 @@ public:
   void SetBeamEnergy(G4double beamE);
   void SetDosePerVoxel( int ix, int iy, int iz, double edep);
   double GetDosePerVoxel( int ix, int iy, int iz );
+  void SetDensityPerVoxel( int ix, int iy, int iz, double density);
+  double GetDensityPerVoxel( int ix, int iy, int iz );
 
   void SetNoVoxelX(G4int val);
   void SetNoVoxelY(G4int val);
@@ -28,6 +41,12 @@ public:
   void SetVoxelX(G4double val);
   void SetVoxelY(G4double val);
   void SetVoxelZ(G4double val);
+  void SetBeamName(G4String val);
+  G4String GetBeamName();
+  void SetXrayEnergy(G4String val);
+  G4String GetXrayEnergy();
+  void SetMidMat(G4String val);
+  G4String GetMidMat();
   void SetBeamType(G4String val);
   G4String GetBeamType();
   void SetMatType(G4String val);
@@ -50,9 +69,6 @@ public:
   void SaveFile();
 
   void Fill1DHist(G4int idx, G4double ibin_x, G4double iwet);
-  void FillNtuple(G4double pos_x, G4double pos_y, G4double pos_z,
-                  G4int vox_id_x, G4int vox_id_y, G4int vox_id_z,
-                  G4double edep, G4int trkp_ID, G4int trk_ID);
 
 private:
   static MyG4HWAnalysis* fInstance;
@@ -74,7 +90,9 @@ private:
   G4int    fTrk_ID;
   G4double fEdep;
   G4double fBeamE;
-  G4double    fVoxelSumDept[61][61][150];
+  G4double*    fVoxelSumDept;
+  G4double*    fdensityPervox;
+  //G4double    fVoxelSumDept[61][61][150];
   G4int    fNvX;
   G4int    fNvY;
   G4int    fNvZ;
@@ -86,8 +104,69 @@ private:
   G4String fbeam;
   G4String fmat;
   G4String fmscstepalg;
-
+  G4String fbeamname;
+  G4String fxrayE;
+  G4String fMidMat;
+  G4String fVoxMatType;
+  G4String fPLname;
+  bool fExDensity;
+  G4String fdensitylist;
+  bool fverbose;
+  G4String ofilenamefordetail;
+  G4String outputprefix;
 };
+
+inline void MyG4HWAnalysis::SetOutPutPrefix(G4String val)
+{
+  outputprefix = val;
+}
+inline G4String MyG4HWAnalysis::GetOutPutPrefix()
+{
+  return outputprefix;
+}
+inline G4String MyG4HWAnalysis::MakeDetailTrackINFO()
+{
+  return ofilenamefordetail;
+}
+inline void MyG4HWAnalysis::SetVerbose(bool val)
+{
+  fverbose=val;
+}
+inline bool MyG4HWAnalysis::GetVerbose()
+{
+  return fverbose;
+}
+inline G4String MyG4HWAnalysis::GetNameOfDenFile()
+{
+  return fdensitylist;
+}
+
+inline bool MyG4HWAnalysis::GetExDensity()
+{
+  return fExDensity;
+}
+inline void MyG4HWAnalysis::SetDensityFlag(bool val)
+{
+  fExDensity = val;
+}
+inline G4String MyG4HWAnalysis::GetPLname()
+{
+  return fPLname;
+}
+inline G4String MyG4HWAnalysis::GetVoxelMatType()
+{
+  return fVoxMatType;
+}
+inline void MyG4HWAnalysis::SetMidMat(G4String val)
+{
+  fMidMat=val;
+}
+
+
+inline G4String MyG4HWAnalysis::GetMidMat()
+{
+  return fMidMat;
+}
 
 inline void MyG4HWAnalysis::SetStepFlag(G4double val)
 {
@@ -134,6 +213,27 @@ inline G4double MyG4HWAnalysis::GetCutValue()
 inline void MyG4HWAnalysis::SetBeamType(G4String val)
 {
   fbeam=val;
+}
+
+inline void MyG4HWAnalysis::SetBeamName(G4String val)
+{
+  fbeamname=val;
+}
+
+inline G4String MyG4HWAnalysis::GetBeamName()
+{
+  return fbeamname;
+}
+
+
+inline void MyG4HWAnalysis::SetXrayEnergy(G4String val)
+{
+  fxrayE=val;
+}
+
+inline G4String MyG4HWAnalysis::GetXrayEnergy()
+{
+  return fxrayE;
 }
 
 inline G4String MyG4HWAnalysis::GetBeamType()
@@ -210,28 +310,15 @@ inline int MyG4HWAnalysis::GetNoVoxelZ()
 }
 inline double MyG4HWAnalysis::GetVoxelX()
 {
-  return fvX ;
+  return fvX *CLHEP::mm ;
 }
 inline double MyG4HWAnalysis::GetVoxelY()
 {
-  return fvY ;
+  return fvY *CLHEP::mm ;
 }
 inline double MyG4HWAnalysis::GetVoxelZ()
 {
-  return fvZ ;
+  return fvZ *CLHEP::mm ;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #endif

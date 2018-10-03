@@ -41,11 +41,10 @@ namespace cug4 {
 // --------------------------------------------------------------------------
 PhysicsListCuG4::PhysicsListCuG4()
 {
-  //defaultCutValue = 1.0 * km;
+  defaultCutValue = 1.0 * mm;
   auto AnaMan = MyG4HWAnalysis::Instance();
   defaultCutValue = AnaMan-> GetCutValue() * mm;
   std::cout << " phys running cut value: " << defaultCutValue / mm << "mm" << std::endl;
-  //defaultCutValue = 1.0 * mm;
   SetVerboseLevel(1);
 }
 
@@ -77,25 +76,19 @@ void PhysicsListCuG4::ConstructProcess()
 
   // multiple scattering for e-
   G4eMultipleScattering *em_msc = new G4eMultipleScattering();
-  //em_msc->SetStepLimitType(fMinimal);
+  em_msc->SetStepLimitType(fMinimal);
+  em_msc->SetStepLimitType( AnaMan-> GetMSCStepAlg() );
 
   // multiple scattering for e+
   G4eMultipleScattering *ep_msc = new G4eMultipleScattering();
   ep_msc->SetStepLimitType(fMinimal);
-
-  em_msc->SetStepLimitType( AnaMan-> GetMSCStepAlg() );
-  std::cout << "testcheny " <<  AnaMan-> GetMSCStepAlg() << std::endl;
-  //em_msc->SetStepLimitType(fMinimal);
-  //em_msc->SetStepLimitType(fUseSafety);
-  //em_msc->SetStepLimitType(fUseSafetyPlus);
-  //em_msc->SetStepLimitType(fUseDistanceToBoundary);
-  //em_msc->SetRangeFactor(0.0002);
-  //em_msc->SetSkin(2000000);
+  ep_msc->SetStepLimitType( AnaMan-> GetMSCStepAlg() );
 
   // multiple scattering for protons
-  // G4hMultipleScattering *p_msc = new G4hMultipleScattering();
-  // p_msc->SetStepLimitType(fMinimal);
-  G4double highEnergyLimit = 100*MeV;
+  G4hMultipleScattering *p_msc = new G4hMultipleScattering();
+  p_msc->SetStepLimitType(fMinimal);
+  p_msc->SetStepLimitType( AnaMan-> GetMSCStepAlg() );
+  
   while( (*theParticleIterator)() ){
     G4ParticleDefinition* particle = theParticleIterator-> value();
     G4String particle_name = particle-> GetParticleName();
@@ -104,33 +97,25 @@ void PhysicsListCuG4::ConstructProcess()
       ph-> RegisterProcess(new G4ComptonScattering,   particle);
       ph-> RegisterProcess(new G4GammaConversion,     particle);
     } else if (particle_name == "e-") {
-      //G4GoudsmitSaundersonMscModel* msc1 = new G4GoudsmitSaundersonMscModel();
-      // G4WentzelVIModel* msc2 = new G4WentzelVIModel();
-      //msc1->SetHighEnergyLimit(highEnergyLimit);
-      // msc2->SetLowEnergyLimit(highEnergyLimit);
-      //em_msc->SetEmModel(msc1);
-      // em_msc->SetEmModel(msc2);
-      
-      
-      //ph-> RegisterProcess(em_msc, particle);
+      ph-> RegisterProcess(em_msc, particle);
       ph-> RegisterProcess(new G4eIonisation,         particle);
-      // ph-> RegisterProcess(new G4eBremsstrahlung,     particle);
-
-      if (AnaMan->GetStepFlag() > 0. )
-      {
-        ph->RegisterProcess(new G4StepLimiter(), particle);
-      }
-
+      ph-> RegisterProcess(new G4eBremsstrahlung,     particle);
     } else if (particle_name == "e+") {
       ph-> RegisterProcess(ep_msc, particle);
       ph-> RegisterProcess(new G4eIonisation,         particle);
       ph-> RegisterProcess(new G4eBremsstrahlung,     particle);
       ph-> RegisterProcess(new G4eplusAnnihilation,   particle);
-    // } else if (particle_name == "proton") {
-    //   ph-> RegisterProcess(p_msc, particle);
-    //   ph-> RegisterProcess(new G4hIonisation,         particle);
+    } else if (particle_name == "proton") {
+      ph-> RegisterProcess(p_msc, particle);
+      ph-> RegisterProcess(new G4hIonisation,         particle);
+    }
+
+    if (AnaMan->GetStepFlag() > 0. )
+    {
+      ph->RegisterProcess(new G4StepLimiter(), particle);
     }
   }
+
   G4EmProcessOptions em_options;
   em_options.SetVerbose(0);
 }

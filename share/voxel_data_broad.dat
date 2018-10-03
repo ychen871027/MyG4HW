@@ -1,0 +1,13 @@
+G4EmStandardPhysics_option4
+Multi
+61 61 150
+5. 5. 2.
+broad
+vg4water
+-1
+1
+fMinimal
+gamma
+18MV
+water
+waterdensity.dat

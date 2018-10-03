@@ -52,7 +52,7 @@ target_link_libraries(MyG4HW ${Geant4_LIBRARIES} ${ROOT_LIBRARIES})
 set(MyG4HW_MACROS
     run.mac vis.mac
     init_vis.mac
-    plot.cc
+    #plot.cc
    )
 
 foreach(_script ${MyG4HW_SCRIPTS})

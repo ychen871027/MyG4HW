@@ -1,20 +1,20 @@
 #include "G4Material.hh"
+#include "G4LogicalVolume.hh"
 #include "G4NistManager.hh"
 #include "G4VPhysicalVolume.hh"
 #include "G4VTouchable.hh"
+#include "MyG4HWAnalysis.hh"
+#include "G4SystemOfUnits.hh"
+#include "G4VisAttributes.hh"
 #include "MyG4HWPhantomParameterisation.hh"
 
-namespace {
-  G4Material* water {nullptr};
-}
-
 MyG4HWPhantomParameterisation::MyG4HWPhantomParameterisation(
-                               const G4ThreeVector& voxelSize
+                               const G4ThreeVector& voxelSize,
+                               std::vector<G4Material*>& mat
                                )
-  :fdX(voxelSize.x()), fdY(voxelSize.y()), fdZ(voxelSize.z())
+  :fdX(voxelSize.x()), fdY(voxelSize.y()), fdZ(voxelSize.z()),
+  fMaterials(mat)
 {
-  G4NistManager* nist = G4NistManager::Instance();
-  ::water = nist->FindOrBuildMaterial( "G4_WATER" );
 }
 
 MyG4HWPhantomParameterisation::~MyG4HWPhantomParameterisation()
@@ -30,19 +30,26 @@ void MyG4HWPhantomParameterisation::SetNoVoxel(
 }
 
 G4Material* MyG4HWPhantomParameterisation::ComputeMaterial(
-    G4VPhysicalVolume*, const G4int, const G4VTouchable*)
+    G4VPhysicalVolume* , const G4int copyNo, const G4VTouchable* parentTouch)
 {
-  return ::water;
+  if (parentTouch==0) return fMaterials[0];
+  G4int ix = parentTouch->GetReplicaNumber(0);
+  G4int iy = parentTouch->GetReplicaNumber(1);
+  G4int copyID = ix + fnX*iy+fnX*fnY*copyNo;
+  static G4Material* mate = 0;
+  mate = fMaterials[copyID];
+
+  return mate;
 }
 
 G4int MyG4HWPhantomParameterisation::GetNumberOfMaterials() const
 {
-  return 1;
+  return fMaterials.size();
 }
 
-G4Material* MyG4HWPhantomParameterisation::GetMaterial( G4int  ) const
+G4Material* MyG4HWPhantomParameterisation::GetMaterial( G4int i ) const
 {
-  return ::water;
+  return fMaterials[i];
 }
 
 void MyG4HWPhantomParameterisation::ComputeTransformation(

@@ -1,8 +1,9 @@
+#include <fstream>
 #include "G4UnitsTable.hh"
 #include <CLHEP/Units/SystemOfUnits.h>
 #include "G4Event.hh"
-#include "MyG4HWEventAction.hh"
 #include "MyG4HWAnalysis.hh"
+#include "MyG4HWEventAction.hh"
 
 MyG4HWEventAction::MyG4HWEventAction() : G4UserEventAction()
 {
@@ -14,18 +15,29 @@ MyG4HWEventAction::~MyG4HWEventAction()
 
 void MyG4HWEventAction::BeginOfEventAction(const G4Event* evt)
 {
-  if ( evt->GetEventID()%1000==0 )
-    G4cout << "---------EventID: "<< evt->GetEventID() << "-----------" << G4endl;
   fNtrk=0;
   fTotEdep=0.;
+  mtime.Start();
+  
+  auto AnaMan = MyG4HWAnalysis::Instance();
+  if (AnaMan-> GetVerbose()) {
+    std::ofstream ofs;
+    ofs.open(AnaMan->MakeDetailTrackINFO(), std::ios::app);
+    ofs << "Event " << evt->GetEventID() << std::endl;
+    ofs.close();
+  }
 }
 
-void MyG4HWEventAction::EndOfEventAction(const G4Event*)
+void MyG4HWEventAction::EndOfEventAction(const G4Event* evt)
 {
   auto AnaMan = MyG4HWAnalysis::Instance();
-  //std::cout << "fNtrk: " << fNtrk << std::endl;
-  //if (fNtrk > 1) std::cout << " iamhere " << std::endl;
   AnaMan-> Fill1DHist(9, fTotEdep/CLHEP::MeV, 1.);
   AnaMan-> Fill1DHist(8, fNtrk, 1.);
+
+  if (evt->GetEventID()%200000 == 0) {
+    std::cout << evt->GetEventID() << " events finished." << std::endl;
+    mtime.Stop();
+    std::cout << "Time: " << G4BestUnit(mtime.GetSystemElapsed(), "Time") << std::endl;
+  }
 
 }

@@ -4,6 +4,7 @@
 #include <TH1D.h>
 #include <TTree.h>
 #include "MyG4HWAnalysis.hh"
+#include <fstream>
 
 MyG4HWAnalysis* MyG4HWAnalysis::fInstance=nullptr;
 
@@ -25,42 +26,53 @@ MyG4HWAnalysis::~MyG4HWAnalysis()
 {
   if (fRootFile) delete fRootFile;
   fInstance = nullptr;
+  if (fNtuple) delete fNtuple;
 }
 
+void MyG4HWAnalysis::SetConfVoxel(G4String voxelconfig)
+{
+  std::ifstream fin(voxelconfig);
+  fin >> fPLname;
+  std::cout << " physics list name: " << fPLname << std::endl;
+  fin >> fVoxMatType;
+  std::cout << " voxel material type: " << fVoxMatType << std::endl;
+  fin >> fNvX >> fNvY >> fNvZ;
+  std::cout << "voxelNum(x,y,z): " << fNvX << "/" << fNvY << "/" << fNvZ << std::endl;
+  fin >> fvX >> fvY >> fvZ;
+  std::cout << "voxelsize(x,y,z)[mm]: " << fvX << "/" << fvY << "/" << fvZ << std::endl;
+  fin >> fbeam;
+  std::cout << "beamtype: " << fbeam << std::endl;
+  fin >> fmat;
+  std::cout << "MatType: " << fmat << std::endl;
+  fin >> fstepflag;
+  std::cout << "StepFlag: " << fstepflag << std::endl;
+  fin >> fcutvalue;
+  std::cout << "CutValue: " << fcutvalue << std::endl;
+  fin >> fmscstepalg;
+  std::cout << "MSCStepAlg: " << fmscstepalg << std::endl;
+  fin >> fbeamname;
+  std::cout << "BeamName: " << fbeamname << std::endl;
+  fin >> fxrayE;
+  std::cout << "Xray Energy: " << fxrayE << std::endl;
+  fin >> fMidMat;
+  std::cout << "Mid material: " << fMidMat << std::endl;
+  if (GetExDensity()) {
+    fin >> fdensitylist;
+    std::cout << "density list name: " << fdensitylist << std::endl;
+  }
+}
 void MyG4HWAnalysis::BookTreeAndHist()
 {
-  G4String fileName = "MyG4HWDepInfo.";
-  //G4String fileName = "MyG4HWDepInfo.gamma";
-  fileName = fileName + GetBeamType() + GetMatType() + ".";
-  if ( fSeedNum > 0 ) {
-    fileName += "root.";
-    fileName += std::to_string( fSeedNum );
-  } else {
-    fileName += "root";
-  }
-  std::cout << "ana outname: " << fileName << std::endl;
-  std::cout << "get the env:  " << getenv("ROOTOUT") << std::endl;
-  G4String rootout = getenv("ROOTOUT");
-  fileName =  rootout + "/" + fileName;
-  std::cout << __LINE__ << "outputrootfile: " << fileName << std::endl;
-  fRootFile = new TFile(fileName, "RECREATE");
-  if (!fRootFile) {
-    G4cout << "can not create output root file" << G4endl;
-    return;
+
+  fHist[0] = new TH1D("PositionZ", "PostitionZ", 150, 0., 30*CLHEP::cm/CLHEP::cm);
+  if( strcmp(GetXrayEnergy(), "6MV") == 0 ){
+    fHist[1] = new TH1D("BEnergy", "BEnergy", 240, 0., 6*CLHEP::MeV);
+  }else if( strcmp(GetXrayEnergy(), "6MV") == 0 ){
+    fHist[1] = new TH1D("BEnergy", "BEnergy", 720, 0., 18*CLHEP::MeV);
+  }else{
+    fHist[1] = new TH1D("BEnergy", "BEnergy", 4000, 0., 100*CLHEP::MeV);
   }
 
-  fNtuple = new TTree("MyG4HW","MyG4HW");
-  fNtuple->Branch("Pos_x",    &fPos_x,   "Pos_x/D");
-  fNtuple->Branch("Pos_y",    &fPos_y,   "Pos_y/D");
-  fNtuple->Branch("Pos_z",    &fPos_z,   "Pos_z/D");
-  fNtuple->Branch("Vox_ID_X", &fVoxID_X, "Vox_ID_X/I");
-  fNtuple->Branch("Vox_ID_Y", &fVoxID_Y, "Vox_ID_Y/I");
-  fNtuple->Branch("Vox_ID_Z", &fVoxID_Z, "Vox_ID_Z/I");
-  fNtuple->Branch("Edep",     &fEdep,    "Edep/D");
-  fNtuple->Branch("TrkP_ID",  &fTrkp_ID, "TrkP_ID/I");
-  fNtuple->Branch("Trk_ID",  &fTrk_ID, "Trk_ID/I");
-  fHist[0] = new TH1D("PositionZ", "PostitionZ", 150, 0., 30*CLHEP::cm/CLHEP::cm);
-  fHist[1] = new TH1D("BEnergy", "BEnergy", 240, 0., 6*CLHEP::MeV);
   fHist[2] = new TH1D("PositionX", "PostitionX", 150, -15.*CLHEP::cm/CLHEP::cm,
                       15.*CLHEP::cm/CLHEP::cm);
   fHist[3] = new TH1D("sxdep", "sxdep", 600, -300.*CLHEP::mm/CLHEP::mm, 300.*CLHEP::mm/CLHEP::mm);
@@ -72,36 +84,86 @@ void MyG4HWAnalysis::BookTreeAndHist()
   fHist[9] = new TH1D("salldepe", "salldepe", 500, 0., 5.*CLHEP::MeV/CLHEP::MeV);
   fHist[10] = new TH1D("dedxE", "dedxE", 50, 0., 5.*CLHEP::MeV/CLHEP::MeV);
 
-  for (G4int i=0; i<61; ++i)
+  fVoxelSumDept  = new G4double[fNvX * fNvY * fNvZ];
+  fdensityPervox = new G4double[fNvX * fNvY * fNvZ];
+  for (G4int iz=0; iz<fNvZ; ++iz)
   {
-    for (G4int j=0; j<61; ++j)
+    for (G4int iy=0; iy<fNvY; ++iy)
     {
-      for (G4int k=0; k<150; ++k)
+      for (G4int ix=0; ix<fNvX; ++ix)
       {
-        fVoxelSumDept[i][j][k]=0.;
+      	int idx_id =  ix + iy*fNvX + iz*fNvX*fNvY;
+        fVoxelSumDept[idx_id]=0.;
+        fdensityPervox[idx_id]=0.;
       }
     }
-
   }
-
+  if (fverbose) {
+    std::ofstream ofs;
+    ofilenamefordetail = G4String(getenv("ROOTOUT")) + "/" + "DetailedTrackINFO_"
+                         + outputprefix + ".dat";
+    ofs.open (ofilenamefordetail);
+    ofs << ".....Starting to record all track info...." << std::endl;
+    ofs.close();
+  }
 }
 
-void MyG4HWAnalysis:: SetDosePerVoxel( int ix, int iy, int iz, double edep)
+void MyG4HWAnalysis::SetDensityPerVoxel( int ix, int iy, int iz, double density)
 {
-  fVoxelSumDept[ix][iy][iz] += edep;
+  int idx_id =  ix + iy*fNvX + iz*fNvX*fNvY;
+  fdensityPervox[idx_id] = density;
 }
 
-double MyG4HWAnalysis:: GetDosePerVoxel(int ix, int iy, int iz)
+double MyG4HWAnalysis::GetDensityPerVoxel( int ix, int iy, int iz)
 {
-  return fVoxelSumDept[ix][iy][iz];
+  int idx_id =  ix + iy*fNvX + iz*fNvX*fNvY;
+  return fdensityPervox[idx_id];
+}
+
+
+void MyG4HWAnalysis::SetDosePerVoxel( int ix, int iy, int iz, double edep)
+{
+  int idx_id =  ix + iy*fNvX + iz*fNvX*fNvY;
+  fVoxelSumDept[idx_id] += edep;
+}
+
+double MyG4HWAnalysis::GetDosePerVoxel(int ix, int iy, int iz)
+{
+  int idx_id =  ix + iy*fNvX + iz*fNvX*fNvY;
+  return fVoxelSumDept[idx_id];
 }
 
 void MyG4HWAnalysis::SaveFile()
 {
-  if (!fRootFile) return;
+  G4String fileName = "MyG4HWHistogram.";
+  fileName = fileName + outputprefix + ".";
+  //fileName = fileName + GetBeamType() + GetMatType() + ".";
+  if ( fSeedNum > 0 ) {
+    fileName += "root.";
+    fileName += std::to_string( fSeedNum );
+  } else {
+    fileName += "root";
+  }
+
+  G4String rootout = getenv("ROOTOUT");
+  fileName =  rootout + "/" + fileName;
+  std::cout << ">>> Outputrootfile <<<\n";
+  std::cout << fileName << std::endl;
+  fRootFile = new TFile(fileName, "RECREATE");
+  if (!fRootFile) {
+    G4cout << "can not create output root file" << G4endl;
+    return;
+  }
+
+  for (int ih=0; ih<kMaxHist; ih++ ) {
+    if (fHist[ih]==nullptr) continue;
+    fHist[ih]->Write("",TObject::kOverwrite);
+  }
+
   fRootFile->Write();
   fRootFile->Close();
-  G4cout << "\n Histograms and ntuples are save.\n" << G4endl;
+  delete[] fVoxelSumDept;
+  delete[] fdensityPervox;
 }
 
 void MyG4HWAnalysis::Fill1DHist(G4int idx, G4double ibin_x, G4double iwet)
@@ -111,22 +173,4 @@ void MyG4HWAnalysis::Fill1DHist(G4int idx, G4double ibin_x, G4double iwet)
     return;
   }
   if (fHist[idx]) fHist[idx]->Fill(ibin_x, iwet);
-}
-
-void MyG4HWAnalysis::FillNtuple(
-                                G4double pos_x, G4double pos_y, G4double pos_z,
-                                G4int vox_id_x, G4int vox_id_y, G4int vox_id_z,
-                                G4double edep, G4int trkp_ID, G4int trk_ID)
-{
-  fPos_x   = pos_x;
-  fPos_y   = pos_y;
-  fPos_z   = pos_z;
-  fVoxID_X = vox_id_x;
-  fVoxID_Y = vox_id_y;
-  fVoxID_Z = vox_id_z;
-  fEdep    = edep;
-  fTrkp_ID = trkp_ID;
-  fTrk_ID  = trk_ID;
-
-  fNtuple->Fill();
 }
